@@ -37,6 +37,7 @@ public:
 	void SetMoney(int m) { money = m; }
 
 	void Buy(int p, int cnt) {
+
 		if (p > money) {
 			if (D)
 				printf("Can't this stock.\n");
@@ -52,7 +53,6 @@ public:
 	}
 
 	void Sell(int p, int cnt) {
-		InitState();
 		money += (p*cnt);
 		stockprice = 0;
 		stockcnt = 0;
