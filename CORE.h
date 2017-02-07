@@ -73,6 +73,7 @@ public:
 		long long m = 0;
 		if (in) {
 			fscanf(in,"%d %lf %lld",&prc,&ctrt,&m);
+			m *= prc;
 			fclose(in);
 		}
 		else {
