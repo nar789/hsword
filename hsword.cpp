@@ -369,10 +369,10 @@ void Cswordtest2Dlg::Buy(CString id, CString price, CString cnt) {
 	m_buy.SetSingleData(1, (variant_t)acnt.Mid(8));
 	m_buy.SetSingleData(2, (variant_t)pass);
 	m_buy.SetSingleData(3, (variant_t)id);
-	m_buy.SetSingleData(4, (variant_t)"13");
+	m_buy.SetSingleData(4, (variant_t)"01");
 	m_buy.SetSingleData(5, (variant_t)cnt);
 	m_buy.SetSingleData(6, (variant_t)"");
-	m_buy.SetSingleData(7, (variant_t)"");
+	m_buy.SetSingleData(7, (variant_t)"01036906736");
 	m_buy.RequestData((_variant_t)"SCABO");
 	printf("Buy Request Send! <%S><%S><%S>\n",id,price,cnt);
 }
@@ -393,10 +393,10 @@ void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
 	m_sell.SetSingleData(2, (variant_t)pass);
 	m_sell.SetSingleData(3, (variant_t)id);
 	m_sell.SetSingleData(4, (variant_t)"01");
-	m_sell.SetSingleData(5, (variant_t)"13");
+	m_sell.SetSingleData(5, (variant_t)"01");
 	m_sell.SetSingleData(6, (variant_t)cnt);
 	m_sell.SetSingleData(7, (variant_t)"");
-	m_sell.SetSingleData(8, (variant_t)"");
+	m_sell.SetSingleData(8, (variant_t)"01036906736");
 	m_sell.RequestData((_variant_t)"SCAAO");
 	printf("Sell Request Send! <%S><%S><%S>\n", id,price,cnt);
 }
@@ -460,7 +460,7 @@ void Cswordtest2Dlg::OnBnClickedBtnSell()
 	m_sell.SetSingleData(2, (variant_t)pass);
 	m_sell.SetSingleData(3, (variant_t)id);
 	m_sell.SetSingleData(4, (variant_t)"01");
-	m_sell.SetSingleData(5, (variant_t)"13");
+	m_sell.SetSingleData(5, (variant_t)"01");
 	m_sell.SetSingleData(6, (variant_t)cnt);
 	m_sell.SetSingleData(7, (variant_t)"");
 	m_sell.SetSingleData(8, (variant_t)"01036906736");
