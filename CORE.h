@@ -4,6 +4,7 @@
 #include<Windows.h>
 #define PERCENT false
 #define PRICE true
+#define CODE 6
 class CORE {
 private:
 
@@ -47,8 +48,13 @@ public:
 				printf("error!\n");
 			}
 		}
-		if (code) {
+		if (strlen(code)==CODE) {
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
+			system(cmd);
+		}
+		else
+		{
+			sprintf(cmd, "hstcp %s -e", servername);
 			system(cmd);
 		}
 	}
@@ -65,6 +71,8 @@ public:
 	}
 
 	int Collect() {
+		if (strlen(code) != CODE)
+			return true;
 		char file[255];
 		MakePath("x.txt", file);
 		FILE *in=fopen(file, "r");

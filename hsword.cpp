@@ -574,7 +574,7 @@ void Cswordtest2Dlg::RequestX(CString id) {
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)id);
 	m_scpc2.RequestData((variant_t)"SCPC2");
-	printf("SCP request<%S>\n",id);
+	printf("SCPC2 request<%S>\n",id);
 }
 
 
