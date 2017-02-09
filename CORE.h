@@ -48,7 +48,7 @@ public:
 				printf("error!\n");
 			}
 		}
-		if (strlen(code)==CODE) {
+		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
 		}
@@ -71,7 +71,7 @@ public:
 	}
 
 	int Collect() {
-		if (strlen(code) != CODE)
+		if (strlen(code) != CODE || code[0]<'0' || code[0]>'9')
 			return true;
 		char file[255];
 		MakePath("x.txt", file);
