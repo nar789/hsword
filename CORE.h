@@ -15,7 +15,7 @@ private:
 	int X =0;
 	int Y =0;
 	int Z = 0;
-	char code[10];
+	char code[255];
 	char servername[100];
 	char* env;
 	
@@ -48,6 +48,7 @@ public:
 				printf("error!\n");
 			}
 		}
+		
 		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
@@ -63,7 +64,7 @@ public:
 		
 		printf("%s\n", servername);
 		load();
-		
+
 		do{
 			GetCode();
 			Sleep(500);
