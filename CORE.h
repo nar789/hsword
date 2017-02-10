@@ -143,6 +143,23 @@ public:
 	}
 
 	void Buy(int prc) {
+		int unit = 0;
+		int level = 3;
+		if (prc >= 500000)
+			unit = 1000;
+		else if (prc >= 100000)
+			unit = 500;
+		else if (prc >= 50000)
+			unit = 100;
+		else if (prc >= 10000)
+			unit = 50;
+		else if (prc >= 5000)
+			unit = 10;
+		else if (prc >= 1000)
+			unit = 5;
+		else
+			unit = 1;
+		prc += unit*level;
 		char cmd[255];
 		int cnt = acount.GetMyMoney() / prc;
 		sprintf(cmd,"hstcp %s -b %s %d %d",servername,code,prc,cnt);

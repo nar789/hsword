@@ -121,7 +121,6 @@ void Cswordtest2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUY_PRICE, m_buy_price);
 	DDX_Control(pDX, IDC_SELL_ID, m_sell_id);
 	DDX_Control(pDX, IDC_SELL_PRICE, m_sell_price);
-	DDX_Control(pDX, IDC_SDOC, m_sdoc);
 	DDX_Control(pDX, IDC_SCPC2, m_scpc2);
 	DDX_Control(pDX, IDC_A, m_a);
 	DDX_Control(pDX, IDC_B, m_b);
@@ -273,10 +272,8 @@ BEGIN_EVENTSINK_MAP(Cswordtest2Dlg, CDialogEx)
 	ON_EVENT(Cswordtest2Dlg, IDC_buy, 3, Cswordtest2Dlg::OnReceiveerrordataBuy, VTS_NONE)
 	ON_EVENT(Cswordtest2Dlg, IDC_sell, 1, Cswordtest2Dlg::ReceiveDatasell, VTS_NONE)
 	ON_EVENT(Cswordtest2Dlg, IDC_sell, 3, Cswordtest2Dlg::ReceiveErrorDatasell, VTS_NONE)
-	ON_EVENT(Cswordtest2Dlg, IDC_SDOC, 1, Cswordtest2Dlg::ReceiveDataSdoc, VTS_NONE)
-	ON_EVENT(Cswordtest2Dlg, IDC_SDOC, 3, Cswordtest2Dlg::ReceiveErrorDataSdoc, VTS_NONE)
 	ON_EVENT(Cswordtest2Dlg, IDC_SCPC2, 1, Cswordtest2Dlg::OnReceivedataScpc2, VTS_NONE)
-	ON_EVENT(Cswordtest2Dlg, IDC_SCPC2, 3, Cswordtest2Dlg::OnReceiveerrordataScpc2, VTS_NONE)
+	ON_EVENT(Cswordtest2Dlg, IDC_SCPC2, 3, Cswordtest2Dlg::OnReceiveerrordataScpc2, VTS_NONE)	
 END_EVENTSINK_MAP()
 
 
@@ -369,9 +366,9 @@ void Cswordtest2Dlg::Buy(CString id, CString price, CString cnt) {
 	m_buy.SetSingleData(1, (variant_t)acnt.Mid(8));
 	m_buy.SetSingleData(2, (variant_t)pass);
 	m_buy.SetSingleData(3, (variant_t)id);
-	m_buy.SetSingleData(4, (variant_t)"01");
+	m_buy.SetSingleData(4, (variant_t)"00");
 	m_buy.SetSingleData(5, (variant_t)cnt);
-	m_buy.SetSingleData(6, (variant_t)"");
+	m_buy.SetSingleData(6, (variant_t)price);
 	m_buy.SetSingleData(7, (variant_t)"01036906736");
 	m_buy.RequestData((_variant_t)"SCABO");
 	printf("Buy Request Send! <%S><%S><%S>\n",id,price,cnt);
@@ -500,48 +497,6 @@ void Cswordtest2Dlg::OnDestroy()
 
 void Cswordtest2Dlg::OnBnClickedBtnSdoc()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	//CString acnt = (CString)"8816597701";
-	CString acnt = ACOUNT;
-	CString pass = (variant_t)m_sdoc.GetEncryptPassword((variant_t)PASSWORD);
-	m_sdoc.SetSingleData(0, (variant_t)acnt.Left(8));
-	m_sdoc.SetSingleData(1, (variant_t)acnt.Mid(8));
-	m_sdoc.SetSingleData(2, (variant_t)pass);
-	m_sdoc.SetSingleData(3, (variant_t)"20160110");
-	m_sdoc.SetSingleData(4, (variant_t)"20160110");
-	m_sdoc.SetSingleData(5, (variant_t)"00");
-	m_sdoc.SetSingleData(6, (variant_t)"00");
-	m_sdoc.SetSingleData(7, (variant_t)"005930");
-	m_sdoc.SetSingleData(8, (variant_t)"00");
-	m_sdoc.SetSingleData(9, (variant_t)"");
-	m_sdoc.SetSingleData(10, (variant_t)"");
-	m_sdoc.SetSingleData(11, (variant_t)"00");
-	m_sdoc.SetSingleData(12, (variant_t)"");
-	m_sdoc.SetSingleData(13, (variant_t)"");
-	m_sdoc.SetSingleData(14, (variant_t)"");
-	printf("SDOC Request Send!\n");
-}
-
-
-void Cswordtest2Dlg::ReceiveDataSdoc()
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	printf("SDOC request receive start.\n");	
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-
-	CString get[4];
-	for (int i = 0; i < 4; i++) {
-		get[i] = (_variant_t)m_sdoc.GetSingleData(i, 0);
-		printf("%S\n",get[i]);
-	}
-	
-}
-
-
-void Cswordtest2Dlg::ReceiveErrorDataSdoc()
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	printf("SDOC Error.\n");
 }
 
 
