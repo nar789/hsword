@@ -163,8 +163,9 @@ public:
 		char cmd[255];
 		int cnt = acount.GetMyMoney() / prc;
 		sprintf(cmd,"hstcp %s -b %s %d %d",servername,code,prc,cnt);
-		acount.Buy(prc, cnt);
 		system(cmd);
+		prc -= unit*level;
+		acount.Buy(prc, cnt);
 		save(prc);
 	}
 	CORE() {
