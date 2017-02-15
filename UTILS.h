@@ -2,8 +2,21 @@
 #include<string.h>
 #include<stdlib.h>
 #include<stdio.h>
+#include<time.h>
 class Utils {
 public:
+	static int CurrentGetMinute() {
+		time_t t = time(NULL);
+		tm* cur;
+		cur = localtime(&t);
+		return cur->tm_min;
+	}
+	static int CurrentGetHour() {
+		time_t t = time(NULL);
+		tm* cur;
+		cur = localtime(&t);
+		return cur->tm_hour;
+	}
 	static int CharToInt(char* str) {
 		int d = 1;
 		int ret = 0;

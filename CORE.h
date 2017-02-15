@@ -1,10 +1,13 @@
 #pragma once
 #include<stdio.h>
 #include "ACOUNT.h"
+#include "UTILS.h"
 #include<Windows.h>
 #define PERCENT false
 #define PRICE true
 #define CODE 6
+#define ENDHOUR 9
+#define ENDMINUTE 10
 class CORE {
 private:
 
@@ -107,6 +110,10 @@ public:
 					return 0;
 				}
 			}
+		}
+		if (Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE)
+		{
+			return 0;
 		}
 		return 1;
 	}
