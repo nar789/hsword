@@ -110,11 +110,13 @@ public:
 					return 0;
 				}
 			}
+			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
+			{
+				Sell(prc);
+				return 0;
+			}
 		}
-		if (Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE)
-		{
-			return 0;
-		}
+		
 		return 1;
 	}
 
