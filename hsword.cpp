@@ -561,9 +561,16 @@ void Cswordtest2Dlg::OnReceivedataSdoc()
 void Cswordtest2Dlg::OnReceivedataScpc2()
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	CString prc = (variant_t)m_scpc2.GetSingleData(1, 0);
-	CString ctrt = (variant_t)m_scpc2.GetSingleData(4, 0);
-	CString m= (variant_t)m_scpc2.GetSingleData(8, 0);
+	CString prc = (variant_t)m_scpc2.GetSingleData(11, 0);
+	CString ctrt = (variant_t)m_scpc2.GetSingleData(14, 0);
+	CString m= (variant_t)m_scpc2.GetSingleData(16, 0);
+	CString sprc = (variant_t)m_scpc2.GetSingleData(18, 0);
+	int iprc = _ttoi(prc);
+	int isprc = _ttoi(sprc);
+	if (iprc <= isprc) {
+		OnBnClickedServerStop();
+		return;
+	}
 	sprintf(socket.servermsg, "%S %S %S", prc, ctrt,m);
 }
 
@@ -580,14 +587,14 @@ void Cswordtest2Dlg::OnBnClickedBtnScpc2()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)"005930");
-	m_scpc2.RequestData((variant_t)"SCPC2");
-	printf("SCPC2 request\n");
+	m_scpc2.RequestData((variant_t)"SCP");
+	printf("SCP request\n");
 }
 void Cswordtest2Dlg::RequestX(CString id) {
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)id);
-	m_scpc2.RequestData((variant_t)"SCPC2");
-	printf("SCPC2 request<%S>\n",id);
+	m_scpc2.RequestData((variant_t)"SCP");
+	printf("SCP request<%S>\n",id);
 }
 
 
