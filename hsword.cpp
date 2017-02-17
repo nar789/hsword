@@ -55,6 +55,7 @@ Cswordtest2Dlg::Cswordtest2Dlg(CWnd* pParent /*=NULL*/)
 	system("title HSword");
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	server = NULL;
+	ChkedInit();
 	FILE *in = fopen("config.ini", "r");
 	if (in) {
 		fclose(in);
@@ -64,6 +65,10 @@ Cswordtest2Dlg::Cswordtest2Dlg(CWnd* pParent /*=NULL*/)
 		CreateINI();
 		LoadINI();
 	}
+}
+
+void Cswordtest2Dlg::ChkedInit() {
+	chkedcnt = chkedprice = chkedid = "";
 }
 
 void Cswordtest2Dlg::CreateINI() {
@@ -133,6 +138,7 @@ void Cswordtest2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PRO, m_pro);
 	DDX_Control(pDX, IDC_FT, m_ft);
 	DDX_Control(pDX, IDC_PRO2, m_pro2);
+	DDX_Control(pDX, IDC_SDOC, m_sdoc);
 }
 
 BEGIN_MESSAGE_MAP(Cswordtest2Dlg, CDialogEx)
@@ -274,6 +280,7 @@ BEGIN_EVENTSINK_MAP(Cswordtest2Dlg, CDialogEx)
 	ON_EVENT(Cswordtest2Dlg, IDC_sell, 3, Cswordtest2Dlg::ReceiveErrorDatasell, VTS_NONE)
 	ON_EVENT(Cswordtest2Dlg, IDC_SCPC2, 1, Cswordtest2Dlg::OnReceivedataScpc2, VTS_NONE)
 	ON_EVENT(Cswordtest2Dlg, IDC_SCPC2, 3, Cswordtest2Dlg::OnReceiveerrordataScpc2, VTS_NONE)	
+	ON_EVENT(Cswordtest2Dlg, IDC_SDOC, 1, Cswordtest2Dlg::OnReceivedataSdoc, VTS_NONE)
 END_EVENTSINK_MAP()
 
 
@@ -372,10 +379,21 @@ void Cswordtest2Dlg::Buy(CString id, CString price, CString cnt) {
 	m_buy.SetSingleData(7, (variant_t)"01036906736");
 	m_buy.RequestData((_variant_t)"SCABO");
 	printf("Buy Request Send! <%S><%S><%S>\n",id,price,cnt);
+
+	m_sell_id.SetWindowTextW(id);
+	m_sell_price.SetWindowTextW(cnt);
 }
 
 void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	
+	chkedid = id;
+	chkedprice = price;
+	chkedcnt = cnt;
+	OnBnClickedBtnSdoc();
+}
+
+void Cswordtest2Dlg::ChkedSell(CString id, CString price, CString cnt)
+{
 	FILE *log = fopen("bin\\log.txt", "a");
 	CTime t = CTime::GetCurrentTime();
 	CString time = t.Format(L"%Y-%m-%d %H:%M:%S");
@@ -395,7 +413,7 @@ void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
 	m_sell.SetSingleData(7, (variant_t)"");
 	m_sell.SetSingleData(8, (variant_t)"01036906736");
 	m_sell.RequestData((_variant_t)"SCAAO");
-	printf("Sell Request Send! <%S><%S><%S>\n", id,price,cnt);
+	printf("Sell Request Send! <%S><%S><%S>\n", id, price, cnt);
 }
 
 
@@ -497,6 +515,46 @@ void Cswordtest2Dlg::OnDestroy()
 
 void Cswordtest2Dlg::OnBnClickedBtnSdoc()
 {
+	time_t t = time(NULL);
+	tm* today;
+	today = localtime(&t);
+	char date[9];
+	sprintf(date,"%d%02d%02d", (int)today->tm_year+1900, (int)today->tm_mon+1, (int)today->tm_mday);
+	CString pass = (variant_t)m_sdoc.GetEncryptPassword((variant_t)PASSWORD);
+	CString acnt = ACOUNT;
+	m_sdoc.SetSingleData(0, (_variant_t)acnt.Left(8));
+	m_sdoc.SetSingleData(1, (_variant_t)acnt.Right(2));
+	m_sdoc.SetSingleData(2, (_variant_t)pass);
+	m_sdoc.SetSingleData(3, (_variant_t)date);
+	m_sdoc.SetSingleData(4, (_variant_t)date);
+	m_sdoc.SetSingleData(5, (_variant_t)"02");
+	m_sdoc.SetSingleData(6, (_variant_t)"00");
+	m_sdoc.SetSingleData(7, (_variant_t)"");
+	m_sdoc.SetSingleData(8, (_variant_t)"01");
+	m_sdoc.SetSingleData(9, (_variant_t)"");
+	m_sdoc.SetSingleData(10, (_variant_t)"");
+	m_sdoc.SetSingleData(11, (_variant_t)"00");
+	m_sdoc.SetSingleData(12, (_variant_t)"");
+	m_sdoc.SetSingleData(13, (_variant_t)"");
+	m_sdoc.SetSingleData(14, (_variant_t)"");
+	m_sdoc.RequestData((_variant_t)"SDOC");
+	//printf("SDOC request\n");
+}
+
+void Cswordtest2Dlg::OnReceivedataSdoc()
+{
+	int mc = m_sdoc.GetMultiRecordCount(0);
+	CString cnt;
+	for (int i = 0; i < mc; i++) {
+		cnt = (_variant_t)m_sdoc.GetMultiData(0, i, 12, 0);
+	}
+	//printf("ChkedCnt:%S\n", cnt);
+	if (cnt == chkedcnt) {
+		ChkedSell(chkedid, chkedprice, chkedcnt);
+	}
+	else {
+		OnBnClickedBtnSdoc();
+	}
 }
 
 
@@ -523,7 +581,7 @@ void Cswordtest2Dlg::OnBnClickedBtnScpc2()
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)"005930");
 	m_scpc2.RequestData((variant_t)"SCPC2");
-	printf("SCP request\n");
+	printf("SCPC2 request\n");
 }
 void Cswordtest2Dlg::RequestX(CString id) {
 	m_scpc2.SetSingleData(0, (variant_t)"J");
@@ -614,3 +672,5 @@ void Cswordtest2Dlg::OnBnClickedDel()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	WinExec("bin\\clean.bat", SW_SHOW);
 }
+
+
