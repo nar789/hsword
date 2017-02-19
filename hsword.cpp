@@ -486,9 +486,13 @@ void Cswordtest2Dlg::OnBnClickedBtnSell()
 
 void Cswordtest2Dlg::OnBnClickedServer()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	serverrun = true;
-	server=new thread(&Cswordtest2Dlg::ServerThread,this);
+	if (!serverrun) {
+		serverrun = true;
+		server = new thread(&Cswordtest2Dlg::ServerThread, this);
+	}
+	else {
+		printf("Already server is running.\n");
+	}
 }
 
 void Cswordtest2Dlg::ServerThread() {
@@ -604,7 +608,7 @@ void Cswordtest2Dlg::OnBnClickedServerStop()
 	if (server != NULL) {
 		this->serverrun = false;
 		server = NULL;
-		printf(">Server Stop.\n");
+		printf(">Stop listening.\n");
 	}
 }
 
@@ -677,7 +681,8 @@ void Cswordtest2Dlg::OnBnClickedCal()
 void Cswordtest2Dlg::OnBnClickedDel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	WinExec("bin\\clean.bat", SW_SHOW);
+	WinExec("bin\\clean.bat", SW_HIDE);
+	printf(">Clean data.\n");
 }
 
 
