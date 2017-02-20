@@ -569,13 +569,7 @@ void Cswordtest2Dlg::OnReceivedataScpc2()
 	CString ctrt = (variant_t)m_scpc2.GetSingleData(14, 0);
 	CString m= (variant_t)m_scpc2.GetSingleData(16, 0);
 	CString sprc = (variant_t)m_scpc2.GetSingleData(18, 0);
-	int iprc = _ttoi(prc);
-	int isprc = _ttoi(sprc);
-	if (iprc <= isprc) {
-		OnBnClickedServerStop();
-		return;
-	}
-	sprintf(socket.servermsg, "%S %S %S", prc, ctrt,m);
+	sprintf(socket.servermsg, "%S %S %S %S", prc, ctrt, m, sprc);
 }
 
 

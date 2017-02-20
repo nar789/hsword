@@ -86,10 +86,11 @@ public:
 		MakePath("x.txt", file);
 		FILE *in=fopen(file, "r");
 		int prc=0;
+		int sprc = 0;
 		double ctrt=0;
 		long long m = 0;
 		if (in) {
-			fscanf(in,"%d %lf %lld",&prc,&ctrt,&m);
+			fscanf(in, "%d %lf %lld %d", &prc, &ctrt, &m, &sprc);
 			m *= prc;
 			fclose(in);
 		}
@@ -100,7 +101,10 @@ public:
 		if (prc&&ctrt&&m) {
 
 			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
-				Buy(prc);
+				if (sprc < prc)
+					Buy(prc);
+				else
+					return 1;
 			}
 			if (P) {
 				if (acount.HaveStock() && prc >= Y) {
