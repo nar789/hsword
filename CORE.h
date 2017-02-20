@@ -6,7 +6,7 @@
 #define PERCENT false
 #define PRICE true
 #define CODE 6
-#define ENDHOUR 9
+#define ENDHOUR 10
 #define ENDMINUTE 10
 class CORE {
 private:
