@@ -408,9 +408,9 @@ void Cswordtest2Dlg::ChkedSell(CString id, CString price, CString cnt)
 	m_sell.SetSingleData(2, (variant_t)pass);
 	m_sell.SetSingleData(3, (variant_t)id);
 	m_sell.SetSingleData(4, (variant_t)"01");
-	m_sell.SetSingleData(5, (variant_t)"01");
+	m_sell.SetSingleData(5, (variant_t)"00");
 	m_sell.SetSingleData(6, (variant_t)cnt);
-	m_sell.SetSingleData(7, (variant_t)"");
+	m_sell.SetSingleData(7, (variant_t)price);
 	m_sell.SetSingleData(8, (variant_t)"01036906736");
 	m_sell.RequestData((_variant_t)"SCAAO");
 	printf("Sell Request Send! <%S><%S><%S>\n", id, price, cnt);
