@@ -17,6 +17,12 @@ public:
 		cur = localtime(&t);
 		return cur->tm_hour;
 	}
+	static int CurrentGetSecond() {
+		time_t t = time(NULL);
+		tm* cur;
+		cur = localtime(&t);
+		return cur->tm_sec;
+	}
 	static int CharToInt(char* str) {
 		int d = 1;
 		int ret = 0;
