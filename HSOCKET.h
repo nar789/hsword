@@ -18,7 +18,6 @@
 // #pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
 
 class Cswordtest2Dlg;
 class HSOCKET {
@@ -28,6 +27,11 @@ private :
 public :
 
 	char servermsg[100];
+	char port[255];
+
+	void SetPort(char* s) {
+		strcpy(port, s);
+	}
 
 	void SetDlg(Cswordtest2Dlg* _d) {
 		dlg = _d;
@@ -63,7 +67,8 @@ public :
 		hints.ai_flags = AI_PASSIVE;
 
 		// Resolve the server address and port
-		iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+		printf("#%s\n",port);
+		iResult = getaddrinfo(NULL, port, &hints, &result);
 		if (iResult != 0) {
 			printf("getaddrinfo failed with error: %d\n", iResult);
 			WSACleanup();

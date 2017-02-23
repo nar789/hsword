@@ -14,7 +14,7 @@
 
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27015"
+#define PORT 4
 
 #define ECHO 0
 #define BUY 1
@@ -22,11 +22,29 @@
 #define X 3
 
 char *env;
+char port[255];
 
 void MakePath(char* filename, char *ret) {
 	strcpy(ret, env);
+	strcat(ret, "\\..\\");
+	strcat(ret, port);
 	strcat(ret, "\\");
 	strcat(ret, filename);
+}
+
+void InputServername(char* arc) {
+	int psi = strlen(arc);
+	int pi = 0;
+	for (int i = 0; i < strlen(arc); i++) {
+		if (arc[i] == ':') {
+			psi = i;
+		}
+		if (psi < i) {
+			port[pi++] = arc[i];
+		}
+	}
+	port[pi] = 0;
+	arc[psi] = 0;
 }
 
 int __cdecl main(int argc, char **argv)
@@ -46,7 +64,7 @@ int __cdecl main(int argc, char **argv)
 
 	// Validate the parameters
 	if (argc < 2) {
-		printf("HSword TCP Client v0.0.1.8\n");
+		printf("HSword TCP Client v1.0.2.23\n");
 		printf("usage: %s server-name [-e] [-s ID Price Count] [-b ID Price Count] [-x ID]\n", argv[0]);
 		return 1;
 	}
@@ -88,7 +106,10 @@ int __cdecl main(int argc, char **argv)
 	hints.ai_protocol = IPPROTO_TCP;
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
+	InputServername(argv[1]);
+	if (strlen(port) != PORT)
+		return 1;
+	iResult = getaddrinfo(argv[1], port, &hints, &result);
 	if (iResult != 0) {
 		printf("getaddrinfo failed with error: %d\n", iResult);
 		WSACleanup();

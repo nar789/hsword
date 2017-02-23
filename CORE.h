@@ -6,6 +6,7 @@
 #define PERCENT false
 #define PRICE true
 #define CODE 6
+#define PORT 4
 #define ENDHOUR 10
 #define ENDMINUTE 10
 class CORE {
@@ -21,6 +22,8 @@ private:
 	char code[255];
 	char servername[100];
 	char* env;
+	char port[255];
+	int codepos = 5;
 	
 public:
 
@@ -28,6 +31,8 @@ public:
 
 	void MakePath(char* filename,char *ret) {
 		strcpy(ret, env);
+		strcat(ret, "\\..\\");
+		strcat(ret, port);
 		strcat(ret, "\\");
 		strcat(ret, filename);
 	}
@@ -36,13 +41,16 @@ public:
 		char cmd[255];
 		if (!acount.HaveStock())
 		{
-			sprintf(cmd, "py %s\\up.py > %s\\up.txt",env,env);
-			system(cmd);
 			char file[255];
+			char out[255];
+			MakePath("up.py",file);
+			MakePath("up.txt", out);
+			sprintf(cmd, "py %s > %s",file,out);
+			system(cmd);
 			MakePath("up.txt", file);
 			FILE *in = fopen(file, "r");
 			if (in) {
-				for (int i = 0; i < 5; i++)
+				for (int i = 0; i < codepos; i++)
 					fscanf(in, "%s", code);
 				printf("code:%s\n", code);
 				fclose(in);
@@ -72,7 +80,8 @@ public:
 		
 		printf("%s\n", servername);
 		load();
-
+		if (strlen(port) != PORT)
+			return;
 		do{
 			GetCode();
 			Sleep(500);
@@ -101,6 +110,10 @@ public:
 		if (prc&&ctrt&&m) {
 
 			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
+
+				if (ctrt >= X + 3)
+					return 0;
+
 				if (sprc < prc)
 					Buy(prc);
 				else
@@ -118,6 +131,12 @@ public:
 					Sell(prc);
 					return 0;
 				}
+			}
+
+			if (ctrt <= X - 1)
+			{
+				Sell(prc);
+				return 0;
 			}
 			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
 			{
@@ -230,6 +249,18 @@ public:
 	void SetSERVERNAME(char* s)
 	{
 		strcpy(servername, s);
+		int psi = strlen(s);
+		int pi = 0;
+		for (int i = 0; i < strlen(s); i++) {
+			if (s[i] == ':')
+				psi = i;
+			if (psi < i) {
+				port[pi++] = s[i];
+			}
+		}
+		port[pi] = 0;
+		if (port[3] == '2')
+			codepos = 6;
 	}
 
 	void SetX(int x,int y) {

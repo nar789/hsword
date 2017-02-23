@@ -7,6 +7,8 @@
 #include "swordtest2Dlg.h"
 #include "afxdialogex.h"
 
+#define SERVERCNT 5
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -54,7 +56,9 @@ Cswordtest2Dlg::Cswordtest2Dlg(CWnd* pParent /*=NULL*/)
 {
 	system("title HSword");
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	
 	server = NULL;
+	serverrun = false;
 	ChkedInit();
 	FILE *in = fopen("config.ini", "r");
 	if (in) {
@@ -139,6 +143,8 @@ void Cswordtest2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_FT, m_ft);
 	DDX_Control(pDX, IDC_PRO2, m_pro2);
 	DDX_Control(pDX, IDC_SDOC, m_sdoc);
+	DDX_Control(pDX, IDC_PORT1, m_port1);
+	DDX_Control(pDX, IDC_PORT2, m_port2);
 }
 
 BEGIN_MESSAGE_MAP(Cswordtest2Dlg, CDialogEx)
@@ -155,6 +161,11 @@ BEGIN_MESSAGE_MAP(Cswordtest2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SERVER_STOP, &Cswordtest2Dlg::OnBnClickedServerStop)
 	ON_BN_CLICKED(IDC_CAL, &Cswordtest2Dlg::OnBnClickedCal)
 	ON_BN_CLICKED(IDC_DEL, &Cswordtest2Dlg::OnBnClickedDel)
+	ON_BN_CLICKED(IDC_CREATE1, &Cswordtest2Dlg::OnClickedCreate1)
+	ON_BN_CLICKED(IDC_CREATE2, &Cswordtest2Dlg::OnClickedCreate2)
+	ON_BN_CLICKED(IDC_S1, &Cswordtest2Dlg::OnClickedS1)
+	ON_BN_CLICKED(IDC_S2, &Cswordtest2Dlg::OnClickedS2)
+	ON_BN_CLICKED(IDC_ALLSERVERSTOP, &Cswordtest2Dlg::OnClickedAllserverstop)
 END_MESSAGE_MAP()
 
 
@@ -209,14 +220,14 @@ BOOL Cswordtest2Dlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
-	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	//init();
 
 	m_id.SetWindowTextW(L"005930");
 	m_buy_id.SetWindowTextW(L"005930");
 	m_buy_price.SetWindowTextW(L"1800000");
 	m_sell_id.SetWindowTextW(L"005930");
 	m_sell_price.SetWindowTextW(L"100");
+	m_port1.SetWindowTextW(L"1371");
+	m_port2.SetWindowTextW(L"1372");
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -441,7 +452,7 @@ void Cswordtest2Dlg::OnReceiveerrordataBuy()
 
 void Cswordtest2Dlg::ReceiveDatasell()
 {
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
+	
 	printf("Sell request receive start.\n");
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	CString get[3];
@@ -451,6 +462,8 @@ void Cswordtest2Dlg::ReceiveDatasell()
 	printf("한국거래소전송주문조직번호 : %d\n", get[0]);
 	printf("주문번호 : %d\n", get[1]);
 	printf("주문시각 : %d\n", get[2]);
+
+	StopAllServer();
 }
 
 
@@ -484,18 +497,52 @@ void Cswordtest2Dlg::OnBnClickedBtnSell()
 }
 
 
+void Cswordtest2Dlg::OnClickedS1()
+{
+	if (server != NULL) {
+		printf("Already server is running.\n");
+		return;
+	}
+	CString p;
+	m_port1.GetWindowTextW(p);
+	sprintf(port, "%S", p);
+	serverrun = true;
+	server = new thread(&Cswordtest2Dlg::ServerThread, this);
+	
+}
+
+
+void Cswordtest2Dlg::OnClickedS2()
+{
+	if (server != NULL) {
+		printf("Already server is running.\n");
+		return;
+	}
+	CString p;
+	m_port2.GetWindowTextW(p);
+	sprintf(port, "%S", p);
+	serverrun = true;
+	server = new thread(&Cswordtest2Dlg::ServerThread, this);
+}
+
+
+
 void Cswordtest2Dlg::OnBnClickedServer()
 {
 	if (!serverrun) {
+		CString p;
+		m_port1.GetWindowTextW(p);
+		sprintf(port, "%S", p);
 		serverrun = true;
-		server = new thread(&Cswordtest2Dlg::ServerThread, this);
+		server= new thread(&Cswordtest2Dlg::ServerThread, this);
 	}
-	else {
-		printf("Already server is running.\n");
+	else{
+		printf("Already all server is running.\n");
 	}
 }
 
 void Cswordtest2Dlg::ServerThread() {
+	socket.SetPort(port);
 	socket.SetDlg(this);
 	socket.ptr_buy = &Cswordtest2Dlg::Buy;
 	socket.ptr_sell = &Cswordtest2Dlg::Sell;
@@ -506,13 +553,20 @@ void Cswordtest2Dlg::ServerThread() {
 	}
 }
 
-
+void Cswordtest2Dlg::OnBnClickedServerStop()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (server != NULL) {
+		this->serverrun = false;
+		server = NULL;
+		printf(">Stop listening.\n");
+	}
+}
 
 void Cswordtest2Dlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
 
-	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	if (server != NULL)
 		server->join();
 }
@@ -596,15 +650,6 @@ void Cswordtest2Dlg::RequestX(CString id) {
 }
 
 
-void Cswordtest2Dlg::OnBnClickedServerStop()
-{
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (server != NULL) {
-		this->serverrun = false;
-		server = NULL;
-		printf(">Stop listening.\n");
-	}
-}
 
 void Cswordtest2Dlg::OnBnClickedCal()
 {
@@ -674,9 +719,56 @@ void Cswordtest2Dlg::OnBnClickedCal()
 
 void Cswordtest2Dlg::OnBnClickedDel()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	WinExec("bin\\clean.bat", SW_HIDE);
-	printf(">Clean data.\n");
+	char cmd[255];
+	CString port1,port2;
+	m_port1.GetWindowTextW(port1);
+	m_port2.GetWindowTextW(port2);
+	sprintf(cmd, "bin\\del.bat %S", port1);
+	system(cmd);
+	sprintf(cmd, "bin\\del.bat %S", port2);
+	system(cmd);
 }
 
 
+
+
+void Cswordtest2Dlg::OnClickedCreate1()
+{
+	char cmd[255];
+	CString port;
+	m_port1.GetWindowTextW(port);
+	
+	sprintf(cmd,"bin\\copy.bat %S",port);
+	system(cmd);
+}
+
+
+void Cswordtest2Dlg::OnClickedCreate2()
+{
+	char cmd[255];
+	CString port;
+	m_port2.GetWindowTextW(port);
+
+	sprintf(cmd, "bin\\copy.bat %S", port);
+	system(cmd);
+}
+
+void Cswordtest2Dlg::StopAllServer()
+{
+	CString port[2];
+	char cmd[255];
+	m_port1.GetWindowTextW(port[0]);
+	m_port2.GetWindowTextW(port[1]);
+	for (int i = 0; i < 2; i++) {
+		sprintf(cmd, "del %S\\hstcp.exe",port[i]);
+		system(cmd);
+		sprintf(cmd, "del %S\\up.py", port[i]);
+		system(cmd);
+	}
+}
+
+
+void Cswordtest2Dlg::OnClickedAllserverstop()
+{
+	StopAllServer();
+}
