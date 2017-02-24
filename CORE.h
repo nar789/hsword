@@ -111,10 +111,7 @@ public:
 
 			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
 
-				if (ctrt >= X + 3)
-					return 0;
-
-				if (sprc < prc)
+				if (sprc < prc && ctrt < X+3)
 					Buy(prc);
 				else
 					return 1;
@@ -133,14 +130,15 @@ public:
 				}
 			}
 
-			if (ctrt <= X - 1)
+			if (acount.HaveStock() && ctrt < X - 1)
 			{
 				Sell(prc);
 				return 0;
 			}
 			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
 			{
-				Sell(prc);
+				if(acount.HaveStock())
+					Sell(prc);
 				return 0;
 			}
 		}
