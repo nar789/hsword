@@ -111,7 +111,7 @@ public:
 
 			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
 
-				if (sprc < prc && ctrt < X+3)
+				if (sprc < prc)
 					Buy(prc);
 				else
 					return 1;
@@ -130,7 +130,7 @@ public:
 				}
 			}
 
-			if (acount.HaveStock() && ctrt < X - 1)
+			if (acount.HaveStock() && acount.GetStockPrice()>prc)
 			{
 				Sell(prc);
 				return 0;
