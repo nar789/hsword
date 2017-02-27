@@ -116,6 +116,9 @@ public:
 				else
 					return 1;
 			}
+			
+			double r = ((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
+			
 			if (P) {
 				if (acount.HaveStock() && prc >= Y) {
 					Sell(prc);
@@ -123,14 +126,13 @@ public:
 				}
 			}
 			else {
-				double r = ((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
 				if (acount.HaveStock() && r>= Y) {//SELL
 					Sell(prc);
 					return 0;
 				}
 			}
 
-			if (acount.HaveStock() && acount.GetStockPrice()>prc)
+			if (acount.HaveStock() && r < -1)
 			{
 				Sell(prc);
 				return 0;
