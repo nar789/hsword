@@ -7,8 +7,8 @@
 #define PRICE true
 #define CODE 6
 #define PORT 4
-#define ENDHOUR 10
-#define ENDMINUTE 10
+#define ENDHOUR 12
+#define ENDMINUTE 30
 class CORE {
 private:
 
