@@ -9,6 +9,7 @@
 #define PORT 4
 #define ENDHOUR 12
 #define ENDMINUTE 30
+#define CODEPOS 4
 class CORE {
 private:
 
@@ -23,8 +24,8 @@ private:
 	char servername[100];
 	char* env;
 	char port[255];
-	int codepos = 5;
-	
+	char blacklist[100][CODE+1];
+	int blacklistpos = 0;
 public:
 
 	void SetP(bool p) { P = p; }
@@ -50,8 +51,21 @@ public:
 			MakePath("up.txt", file);
 			FILE *in = fopen(file, "r");
 			if (in) {
-				for (int i = 0; i < codepos; i++)
+				for (int i = 0;; i++)
+				{
 					fscanf(in, "%s", code);
+					bool exit = true;
+					if (i >= CODEPOS)
+					{
+						for (int j = 0; j < blacklistpos; j++)
+						{
+							if (strcmp(blacklist[j], code) == 0)
+								exit = false;
+						}
+					}
+					if (exit)
+						break;
+				}
 				printf("code:%s\n", code);
 				fclose(in);
 			}
@@ -109,12 +123,15 @@ public:
 		}
 		if (prc&&ctrt&&m) {
 
-			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
+			if (!acount.HaveStock() && ctrt >= X ) {//BUY
 
-				if (sprc < prc)
+				if (sprc < prc && m >= Z)
 					Buy(prc);
-				else
+				else {
+					strcpy(blacklist[blacklistpos++], code);
 					return 1;
+				}
+					
 			}
 			
 			double r = ((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
@@ -132,7 +149,7 @@ public:
 				}
 			}
 
-			if (acount.HaveStock() && r < -1)
+			if (acount.HaveStock() && r < -1.6f)
 			{
 				Sell(prc);
 				return 0;
@@ -259,8 +276,6 @@ public:
 			}
 		}
 		port[pi] = 0;
-		if (port[3] == '2')
-			codepos = 6;
 	}
 
 	void SetX(int x,int y) {
