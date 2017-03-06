@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
 	if (argc<=3)
 	{
-		printf("HSword +----- version 1.0.3.3\n");
+		printf("HSword +----- version 1.0.3.6\n");
 		printf("usage: hs X Y Z [server-name]\n");
 		return 0;
 	}

@@ -151,7 +151,7 @@ public:
 				}
 			}
 
-			if (acount.HaveStock() && r < -1.6f)
+			if (acount.HaveStock() && r < -X)
 			{
 				Sell(prc);
 				return 0;
