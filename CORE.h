@@ -9,7 +9,7 @@
 #define PORT 4
 #define ENDHOUR 12
 #define ENDMINUTE 30
-#define CODEPOS 4
+#define CODEPOS 0
 class CORE {
 private:
 
@@ -43,39 +43,22 @@ public:
 		if (!acount.HaveStock())
 		{
 			char file[255];
-			char out[255];
-			MakePath("up.py",file);
-			MakePath("up.txt", out);
-			sprintf(cmd, "py %s > %s",file,out);
-			system(cmd);
-			MakePath("up.txt", file);
+			strcpy(code, "");
+			strcpy(file, env);
+			strcat(file, "\\up.txt");
 			FILE *in = fopen(file, "r");
 			if (in) {
-				for (int i = 0;; i++)
+				fscanf(in, "%s", code);
+				for (int j = 0; j < blacklistpos; j++)
 				{
-					fscanf(in, "%s", code);
-					bool exit = true;
-					if (i >= CODEPOS)
-					{
-						for (int j = 0; j < blacklistpos; j++)
-						{
-							if (strcmp(blacklist[j], code) == 0) {
-								exit = false;
-								break;
-							}
-						}
-						if (exit)
-							break;
+					if (strcmp(blacklist[j], code) == 0) {
+						strcpy(code, "");
 					}
 				}
 				printf("code:%s\n", code);
 				fclose(in);
 			}
-			else {
-				printf("error!\n");
-			}
 		}
-		
 		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {
 			char uplog[255];
 			MakePath("uplog.txt", uplog);
