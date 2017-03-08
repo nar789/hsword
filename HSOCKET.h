@@ -25,7 +25,6 @@ class HSOCKET {
 private :
 	Cswordtest2Dlg* dlg;
 public :
-
 	char servermsg[100];
 	char port[255];
 
@@ -117,6 +116,8 @@ public :
 		printf(">Accept.\n");
 		// No longer need server socket
 		closesocket(ListenSocket);
+		
+
 
 		// Receive until the peer shuts down the connection
 		do {

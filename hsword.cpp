@@ -57,6 +57,7 @@ Cswordtest2Dlg::Cswordtest2Dlg(CWnd* pParent /*=NULL*/)
 	system("title HSword");
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	
+	socket = NULL;
 	server = NULL;
 	serverrun = false;
 	ChkedInit();
@@ -542,12 +543,13 @@ void Cswordtest2Dlg::OnBnClickedServer()
 }
 
 void Cswordtest2Dlg::ServerThread() {
-	socket.SetPort(port);
-	socket.SetDlg(this);
-	socket.ptr_buy = &Cswordtest2Dlg::Buy;
-	socket.ptr_sell = &Cswordtest2Dlg::Sell;
-	socket.ptr_x = &Cswordtest2Dlg::RequestX;
-	while (!socket.run()) {
+	socket = new HSOCKET();
+	socket->SetPort(port);
+	socket->SetDlg(this);
+	socket->ptr_buy = &Cswordtest2Dlg::Buy;
+	socket->ptr_sell = &Cswordtest2Dlg::Sell;
+	socket->ptr_x = &Cswordtest2Dlg::RequestX;
+	while (!socket->run()) {
 		if (!serverrun)
 			break;
 	}
@@ -555,12 +557,16 @@ void Cswordtest2Dlg::ServerThread() {
 
 void Cswordtest2Dlg::OnBnClickedServerStop()
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (socket != NULL)
+	{
+		socket = NULL;
+	}
 	if (server != NULL) {
 		this->serverrun = false;
 		server = NULL;
 		printf(">Stop listening.\n");
 	}
+	
 }
 
 void Cswordtest2Dlg::OnDestroy()
@@ -623,7 +629,7 @@ void Cswordtest2Dlg::OnReceivedataScpc2()
 	CString ctrt = (variant_t)m_scpc2.GetSingleData(14, 0);
 	CString m= (variant_t)m_scpc2.GetSingleData(16, 0);
 	CString sprc = (variant_t)m_scpc2.GetSingleData(18, 0);
-	sprintf(socket.servermsg, "%S %S %S %S", prc, ctrt, m, sprc);
+	sprintf(socket->servermsg, "%S %S %S %S", prc, ctrt, m, sprc);
 }
 
 

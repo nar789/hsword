@@ -3,6 +3,7 @@
 #include "ACOUNT.h"
 #include "UTILS.h"
 #include<Windows.h>
+
 #define PERCENT false
 #define PRICE true
 #define CODE 6
@@ -83,7 +84,6 @@ public:
 			return;
 		do{
 			GetCode();
-			Sleep(500);
 		} while (Collect());
 	}
 
