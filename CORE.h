@@ -43,21 +43,28 @@ public:
 		char cmd[255];
 		if (!acount.HaveStock())
 		{
-			char file[255];
 			strcpy(code, "");
-			strcpy(file, env);
-			strcat(file, "\\up.txt");
-			FILE *in = fopen(file, "r");
-			if (in) {
-				fscanf(in, "%s", code);
-				for (int j = 0; j < blacklistpos; j++)
-				{
-					if (strcmp(blacklist[j], code) == 0) {
-						strcpy(code, "");
+			time_t t = time(NULL);
+			tm* cur;
+			cur = localtime(&t);
+			printf("%02d:%02d\n",cur->tm_hour,cur->tm_min);
+
+			if (cur->tm_hour>=9) {
+				char file[255];
+				strcpy(file, env);
+				strcat(file, "\\up.txt");
+				FILE *in = fopen(file, "r");
+				if (in) {
+					fscanf(in, "%s", code);
+					for (int j = 0; j < blacklistpos; j++)
+					{
+						if (strcmp(blacklist[j], code) == 0) {
+							strcpy(code, "");
+						}
 					}
+					printf("code:%s\n", code);
+					fclose(in);
 				}
-				printf("code:%s\n", code);
-				fclose(in);
 			}
 		}
 		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {

@@ -59,18 +59,19 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 }
 
 void Cswordtest9Dlg::ArguProcessor() {
-	printf("UP v1.0.3.7\n");
+	printf("UP v1.0.3.10\n");
 	env = getenv("HSWORD_HOME");	
 	CString arg = __targv[1];
 	if (arg == "-r")
 	{
+		/*
 		while (true) {
 			time_t t = time(NULL);
 			tm* cur;
 			cur = localtime(&t);
 			if (cur->tm_hour >= 9)
 				break;
-		}
+		}*/
 		OnClickedRank();
 	}
 }
