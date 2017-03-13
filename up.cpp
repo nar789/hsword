@@ -196,6 +196,20 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 			fprintf(out, "%s", topcode);
 			fclose(out);
 		}
+
+		strcpy(file, env);
+		strcat(file, "\\upcp.txt");
+		out = fopen(file, "a");
+		if (out) {
+			time_t t = time(NULL);
+			tm* cur;
+			cur = localtime(&t);
+			int h = cur->tm_hour;
+			int m = cur->tm_min;
+			int s = cur->tm_sec;
+			fprintf(out,"%02d:%02d:%02d %s %.1f\n",h,m,s,topcode,topratio);
+			fclose(out);
+		}
 		printf("\n%s %.1f\n", topcode,topratio);
 		OnClickedRank();
 	}
