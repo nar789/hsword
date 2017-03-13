@@ -64,14 +64,6 @@ void Cswordtest9Dlg::ArguProcessor() {
 	CString arg = __targv[1];
 	if (arg == "-r")
 	{
-		/*
-		while (true) {
-			time_t t = time(NULL);
-			tm* cur;
-			cur = localtime(&t);
-			if (cur->tm_hour >= 9)
-				break;
-		}*/
 		OnClickedRank();
 	}
 }
@@ -174,14 +166,14 @@ void Cswordtest9Dlg::OnClickedRank()
 	printf("[%d]Upload on memory.\n",codecnt);
 	itgrank.SetSingleData(0, (_variant_t)"J");
 	itgrank.SetSingleData(1, (_variant_t)curcode[0]);
-	itgrank.RequestData((_variant_t)"SCP");
+	itgrank.RequestData((_variant_t)"SCPC");
 }
 
 
 void Cswordtest9Dlg::OnReceivedataItgrank()
 {	
-	const int ratioidx = 14;
-	CString ratio = (_variant_t)itgrank.GetSingleData(ratioidx, 0);
+	const int ratioidx = 6;
+	CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
 	float f = _ttof(ratio);
 	if (f > topratio)
 	{
@@ -192,7 +184,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		if (codeidx % 5 == 0)printf(".");
 		itgrank.SetSingleData(0, (_variant_t)"J");
 		itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
-		itgrank.RequestData((_variant_t)"SCP");
+		itgrank.RequestData((_variant_t)"SCPC");
 	}
 	else {
 		char file[255];
