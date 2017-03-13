@@ -25,8 +25,7 @@ private:
 	char servername[100];
 	char* env;
 	char port[255];
-	char blacklist[100][CODE+1];
-	int blacklistpos = 0;
+	
 public:
 
 	void SetP(bool p) { P = p; }
@@ -56,12 +55,6 @@ public:
 				FILE *in = fopen(file, "r");
 				if (in) {
 					fscanf(in, "%s", code);
-					for (int j = 0; j < blacklistpos; j++)
-					{
-						if (strcmp(blacklist[j], code) == 0) {
-							strcpy(code, "");
-						}
-					}
 					printf("code:%s\n", code);
 					fclose(in);
 				}
@@ -115,14 +108,9 @@ public:
 		}
 		if (prc&&ctrt&&m) {
 
-			if (!acount.HaveStock() && ctrt >= X ) {//BUY
-
-				if (sprc < prc && m >= Z)
-					Buy(prc);
-				else {
-					strcpy(blacklist[blacklistpos++], code);
-					return 1;
-				}
+			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
+					
+				Buy(prc);
 					
 			}
 			
