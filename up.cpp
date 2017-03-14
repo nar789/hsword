@@ -173,12 +173,15 @@ void Cswordtest9Dlg::OnClickedRank()
 void Cswordtest9Dlg::OnReceivedataItgrank()
 {	
 	const int ratioidx = 6;
-	CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
-	float f = _ttof(ratio);
-	if (f > topratio)
-	{
-		topratio = f;
-		strcpy(topcode, curcode[codeidx]);
+	int recordcnt = itgrank.GetMultiRecordCount(0);
+	if (recordcnt >= 10) {
+		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
+		float f = _ttof(ratio);
+		if (f > topratio && f<20.0f)
+		{
+			topratio = f;
+			strcpy(topcode, curcode[codeidx]);
+		}
 	}
 	if (++codeidx < codecnt-1) {
 		if (codeidx % 5 == 0)printf(".");
