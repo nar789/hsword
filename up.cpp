@@ -59,7 +59,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 }
 
 void Cswordtest9Dlg::ArguProcessor() {
-	printf("UP v1.0.3.10\n");
+	printf("UP v1.0.3.21\n");
 	env = getenv("HSWORD_HOME");	
 	CString arg = __targv[1];
 	if (arg == "-r")
@@ -173,11 +173,14 @@ void Cswordtest9Dlg::OnClickedRank()
 void Cswordtest9Dlg::OnReceivedataItgrank()
 {	
 	const int ratioidx = 6;
+	const int rltvidx = 5;
 	int recordcnt = itgrank.GetMultiRecordCount(0);
 	if (recordcnt >= 10) {
 		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
+		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		float f = _ttof(ratio);
-		if (f > topratio && f<20.0f)
+		float f_rltv = _ttof(rltv);
+		if (f > topratio && f<20.0f && f_rltv >= 100.0f)
 		{
 			topratio = f;
 			strcpy(topcode, curcode[codeidx]);
