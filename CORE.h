@@ -64,8 +64,10 @@ public:
 			char uplog[255];
 			MakePath("uplog.txt", uplog);
 			FILE *in = fopen(uplog, "a");
-			fprintf(in,"%s %02d:%02d:%02d\n",code,Utils::CurrentGetHour(),Utils::CurrentGetMinute(),Utils::CurrentGetSecond());
-			fclose(in);
+			if (in) {
+				fprintf(in, "%s %02d:%02d:%02d\n", code, Utils::CurrentGetHour(), Utils::CurrentGetMinute(), Utils::CurrentGetSecond());
+				fclose(in);
+			}
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
 		}
