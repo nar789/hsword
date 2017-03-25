@@ -6,6 +6,7 @@
 #include "swordtest9.h"
 #include "swordtest9Dlg.h"
 #include "afxdialogex.h"
+#include <thread>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,23 +48,26 @@ END_EVENTSINK_MAP()
 BOOL Cswordtest9Dlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+	
 
 	// 이 대화 상자의 아이콘을 설정합니다.  응용 프로그램의 주 창이 대화 상자가 아닐 경우에는
 	//  프레임워크가 이 작업을 자동으로 수행합니다.
 	SetIcon(m_hIcon, TRUE);			// 큰 아이콘을 설정합니다.
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
-
 	ArguProcessor();
-
+	
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
 void Cswordtest9Dlg::ArguProcessor() {
-	printf("UP v1.0.3.21\n");
+	
+	printf("UP v1.0.3.25\n");
 	env = getenv("HSWORD_HOME");	
 	CString arg = __targv[1];
+	
 	if (arg == "-r")
 	{
+		tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
 		OnClickedRank();
 	}
 }
@@ -74,6 +78,8 @@ void Cswordtest9Dlg::ArguProcessor() {
 
 void Cswordtest9Dlg::OnPaint()
 {
+	
+	
 	if (IsIconic())
 	{
 		CPaintDC dc(this); // 그리기를 위한 디바이스 컨텍스트입니다.
@@ -95,6 +101,7 @@ void Cswordtest9Dlg::OnPaint()
 	{
 		CDialogEx::OnPaint();
 	}
+	
 }
 
 // 사용자가 최소화된 창을 끄는 동안에 커서가 표시되도록 시스템에서
@@ -110,7 +117,8 @@ void Cswordtest9Dlg::OnClickedUp()
 {
 	char c[7];
 	sprintf(c, "%06d", code);
-	scpc.SetSingleData(0,(_variant_t)"J");
+
+	scpc.SetSingleData(0, (_variant_t)"J");
 	scpc.SetSingleData(1, (_variant_t)c);
 	scpc.RequestData((_variant_t)"SCP");
 }
@@ -145,6 +153,17 @@ void Cswordtest9Dlg::OnReceivedataScpc()
 
 }
 
+void Cswordtest9Dlg::CheckCall() {
+	while (true) {
+		before_codeidx = codeidx;
+		Sleep(2000);
+		if (before_codeidx == codeidx) {
+			system("up -r");
+			exit(0);
+		}
+	}
+}
+
 
 void Cswordtest9Dlg::OnClickedRank()
 {
@@ -155,23 +174,58 @@ void Cswordtest9Dlg::OnClickedRank()
 	codecnt = 0;
 	codeidx = 0;
 	topratio = 0;
-	strcpy(topcode, "");
-
+	topcode = codeidx;
 
 	if (in) {
-		while (fscanf(in, "%s", curcode[codecnt++]) != -1) {
-		}
+		while (fscanf(in, "%s", curcode[codecnt++]) != -1);
 		fclose(in);
 	}
 	printf("[%d]Upload on memory.\n",codecnt);
-	itgrank.SetSingleData(0, (_variant_t)"J");
-	itgrank.SetSingleData(1, (_variant_t)curcode[0]);
-	itgrank.RequestData((_variant_t)"SCPC");
+	CallRank();
+}
+
+void Cswordtest9Dlg::Save() {
+	char file[255];
+	strcpy(file, env);
+	strcat(file, "\\up.txt");
+	FILE *out = fopen(file, "w");
+	if (out)
+	{
+		fprintf(out, "%s", curcode[topcode]);
+		fclose(out);
+	}
+
+	strcpy(file, env);
+	strcat(file, "\\upcp.txt");
+	out = fopen(file, "a");
+	if (out) {
+		time_t t = time(NULL);
+		tm* cur;
+		cur = localtime(&t);
+		int h = cur->tm_hour;
+		int m = cur->tm_min;
+		int s = cur->tm_sec;
+		fprintf(out, "%02d:%02d:%02d %s %.1f\n", h, m, s, curcode[topcode], topratio);
+		fclose(out);
+	}
+	printf("\n%s %.1f\n", curcode[topcode], topratio);
+	codeidx = 0;
+	topratio = 0;
+	topcode = 0;
+	CallRank();
 }
 
 
+void Cswordtest9Dlg::CallRank() {
+	itgrank.SetSingleData(0, (_variant_t)"J");
+	itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
+	itgrank.RequestData((_variant_t)"SCPC");
+}
+
 void Cswordtest9Dlg::OnReceivedataItgrank()
 {	
+	if (codeidx % 5 == 0)
+		printf(".");
 	const int ratioidx = 6;
 	const int rltvidx = 5;
 	int recordcnt = itgrank.GetMultiRecordCount(0);
@@ -183,40 +237,12 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		if (f > topratio && f<20.0f && f_rltv >= 100.0f)
 		{
 			topratio = f;
-			strcpy(topcode, curcode[codeidx]);
+			topcode = codeidx;
 		}
 	}
-	if (++codeidx < codecnt-1) {
-		if (codeidx % 5 == 0)printf(".");
-		itgrank.SetSingleData(0, (_variant_t)"J");
-		itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
-		itgrank.RequestData((_variant_t)"SCPC");
+	if (++codeidx < codecnt - 1) {
+		CallRank();
 	}
-	else {
-		char file[255];
-		strcpy(file, env);
-		strcat(file, "\\up.txt");
-		FILE *out = fopen(file, "w");
-		if (out)
-		{
-			fprintf(out, "%s", topcode);
-			fclose(out);
-		}
-
-		strcpy(file, env);
-		strcat(file, "\\upcp.txt");
-		out = fopen(file, "a");
-		if (out) {
-			time_t t = time(NULL);
-			tm* cur;
-			cur = localtime(&t);
-			int h = cur->tm_hour;
-			int m = cur->tm_min;
-			int s = cur->tm_sec;
-			fprintf(out,"%02d:%02d:%02d %s %.1f\n",h,m,s,topcode,topratio);
-			fclose(out);
-		}
-		printf("\n%s %.1f\n", topcode,topratio);
-		OnClickedRank();
-	}
+	else
+		Save();
 }
