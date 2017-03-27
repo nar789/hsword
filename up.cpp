@@ -61,12 +61,23 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.3.25\n");
+	printf("UP v1.0.3.27\n");
 	env = getenv("HSWORD_HOME");	
+	strcpy(buypath, env);
+	strcat(buypath, "\\..\\1371\\buy.txt");
 	CString arg = __targv[1];
 	
 	if (arg == "-r")
 	{
+		time_t t = time(NULL);
+		tm* cur = localtime(&t);
+		while (cur->tm_hour < 9)
+		{
+			Sleep(1000);
+			printf("%02d:%02d:%02d\n",cur->tm_hour,cur->tm_min,cur->tm_sec);
+			t = time(NULL);
+			cur = localtime(&t);
+		}
 		tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
 		OnClickedRank();
 	}
@@ -158,7 +169,15 @@ void Cswordtest9Dlg::CheckCall() {
 		before_codeidx = codeidx;
 		Sleep(2000);
 		if (before_codeidx == codeidx) {
-			system("up -r");
+			printf("Connection is close.\n");
+			char file[255];
+			strcpy(file, env);
+			strcat(file, "\\uperr.txt");
+			FILE *err = fopen(file, "w");
+			if (err) {
+				fprintf(err,"Connection is close.\n");
+				fclose(err);
+			}
 			exit(0);
 		}
 	}
@@ -217,6 +236,9 @@ void Cswordtest9Dlg::Save() {
 
 
 void Cswordtest9Dlg::CallRank() {
+	FILE *buy = fopen(buypath, "r");
+	if (buy)
+		exit(0);
 	itgrank.SetSingleData(0, (_variant_t)"J");
 	itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
 	itgrank.RequestData((_variant_t)"SCPC");
