@@ -171,22 +171,10 @@ public:
 	}
 
 	void Sell(int prc) {
-		int unit = 0;
-		int level = 3;
-		if (prc >= 500000)
-			unit = 1000;
-		else if (prc >= 100000)
-			unit = 500;
-		else if (prc >= 50000)
-			unit = 100;
-		else if (prc >= 10000)
-			unit = 50;
-		else if (prc >= 5000)
-			unit = 10;
-		else if (prc >= 1000)
-			unit = 5;
-		else
-			unit = 1;
+
+		int unit = GetUnit(prc);;
+		const int level = 3;
+		
 		prc -= unit*level;
 		char cmd[255];
 		int cnt = acount.GetStockCnt();
@@ -197,9 +185,18 @@ public:
 		
 	}
 
-	void Buy(int prc) {
-		int unit = 0;
-		int level = 3;
+	void directSell(int prc) {
+
+		char cmd[255];
+		int cnt = acount.GetStockCnt();
+		sprintf(cmd, "hstcp %s -s %s %d %d", servername, code, prc, cnt);
+		system(cmd);
+		acount.Sell(prc, cnt);
+
+	}
+
+	int GetUnit(int &prc) {
+		int unit = 1;
 		if (prc >= 500000)
 			unit = 1000;
 		else if (prc >= 100000)
@@ -214,6 +211,23 @@ public:
 			unit = 5;
 		else
 			unit = 1;
+		return unit;
+	}
+
+	int GetSellPrc(int& prc,int& unit)
+	{
+		int sell_prc = prc;
+		const double goal_prc =(double)prc * 1.02f;
+		do {
+			sell_prc += unit;
+		} while (sell_prc < goal_prc);
+		return sell_prc;
+	}
+
+	void Buy(int prc) {
+		int unit = GetUnit(prc);
+		const int level = 3;
+		
 		prc += unit*level;
 		char cmd[255];
 		int cnt = acount.GetMyMoney() / prc;
@@ -222,7 +236,10 @@ public:
 		prc -= unit*level;
 		acount.Buy(prc, cnt);
 		save(prc);
+
+		directSell(GetSellPrc(prc, unit));
 	}
+
 	CORE() {
 		env = getenv("HSWORD_HOME");
 		acount.SetMoney(10000000);
