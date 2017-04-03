@@ -172,7 +172,7 @@ public:
 
 	void Sell(int prc) {
 
-		int unit = GetUnit(prc);;
+		int unit = GetUnit(prc);
 		const int level = 3;
 		
 		prc -= unit*level;
@@ -191,8 +191,7 @@ public:
 		int cnt = acount.GetStockCnt();
 		sprintf(cmd, "hstcp %s -s %s %d %d", servername, code, prc, cnt);
 		system(cmd);
-		acount.Sell(prc, cnt);
-
+		//acount.Sell(prc, cnt);
 	}
 
 	int GetUnit(int &prc) {
