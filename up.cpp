@@ -61,7 +61,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.3.27\n");
+	printf("UP v1.0.4.4\n");
 	env = getenv("HSWORD_HOME");	
 	strcpy(buypath, env);
 	strcat(buypath, "\\..\\1371\\buy.txt");
@@ -167,7 +167,7 @@ void Cswordtest9Dlg::OnReceivedataScpc()
 void Cswordtest9Dlg::CheckCall() {
 	while (true) {
 		before_codeidx = codeidx;
-		Sleep(2000);
+		Sleep(10000);
 		if (before_codeidx == codeidx) {
 			printf("Connection is close.\n");
 			char file[255];
