@@ -199,19 +199,30 @@ void CPrepareDlg::OnReceivedataScpc()
 	int rc = m_scpc.GetMultiRecordCount(0);
 	const int feild_no_hour = 0;
 	const int feild_no_curPrice = 1;
+	const int feild_no_sign = 3;
+
+	bool gotodown = false;
 	
 	for (int i = 0; i < rc; i++) {
 		CString hour = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_hour, 0);
 		CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
+		CString sign = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_sign, 0);
 
 		int isec = _ttoi(hour);
 		int iprice = _ttoi(price);
+		int isign = _ttoi(sign);
+
+		if (isign >= 5)
+			gotodown = true;
+
 		isec = hourToSec(isec);
 		
 		r.save(isec, iprice);
 	}
+	
 	double v = r.calculate();
-	if (v >= 0.0f) {
+
+	if (v >= 0.0f && !gotodown) {
 		FILE *out = fopen(writepath, "a");
 		if (out) {
 			fprintf(out,"%s\n",code[curidx]);
