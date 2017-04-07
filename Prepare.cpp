@@ -181,7 +181,7 @@ void CPrepareDlg::init() {
 void CPrepareDlg::RequestScpc(char* code) {
 	m_scpc.SetSingleData(0, (_variant_t)"J");
 	m_scpc.SetSingleData(1, (_variant_t)code);
-	m_scpc.RequestData((_variant_t)"SCPC");
+	m_scpc.RequestData((_variant_t)"SCPC2");
 }
 
 int CPrepareDlg::hourToSec(int& hour) {
@@ -221,7 +221,7 @@ void CPrepareDlg::OnReceivedataScpc()
 	}
 	
 	double v = r.calculate();
-
+	
 	if (v >= 0.0f && !smallvol) {
 		FILE *out = fopen(writepath, "a");
 		if (out) {
