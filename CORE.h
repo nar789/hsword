@@ -96,21 +96,20 @@ public:
 		MakePath("x.txt", file);
 		FILE *in=fopen(file, "r");
 		int prc=0;
-		int sprc = 0;
+		double rltv = 0;
 		double ctrt=0;
 		long long m = 0;
 		if (in) {
-			fscanf(in, "%d %lf %lld %d", &prc, &ctrt, &m, &sprc);
-			m *= prc;
+			fscanf(in, "%d %lf %lld %lf", &prc, &ctrt, &m, &rltv);
 			fclose(in);
 		}
 		else {
 			printf("x.txt read fail.\n");
 			return 0;
 		}
-		if (prc&&ctrt&&m) {
+		if (prc && ctrt && m && rltv) {
 
-			if (!acount.HaveStock() && ctrt >= X && m >= Z) {//BUY
+			if (!acount.HaveStock() && ctrt >= X && m >= Z && rltv >= 100.0f) {//BUY
 					
 				Buy(prc);
 					
@@ -254,11 +253,11 @@ public:
 		printf("Y=%d\n", Y);
 		printf("Z=%d\n", Z);
 		if (Y > 10)SetP(true);
+		if (Z <= 10)Z = Z * 10000;
 	}
 
 	void SetMoney(int m) {
 		acount.SetMoney(m);
-		if (Z <= 10)Z = Z*m;
 	}
 
 	void SetSERVERNAME(char* s)

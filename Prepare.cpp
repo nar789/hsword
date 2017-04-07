@@ -199,21 +199,21 @@ void CPrepareDlg::OnReceivedataScpc()
 	int rc = m_scpc.GetMultiRecordCount(0);
 	const int feild_no_hour = 0;
 	const int feild_no_curPrice = 1;
-	const int feild_no_sign = 3;
+	const int feild_no_vol = 8;
 
-	bool gotodown = false;
+	bool  smallvol = false;
 	
 	for (int i = 0; i < rc; i++) {
 		CString hour = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_hour, 0);
 		CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
-		CString sign = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_sign, 0);
+		CString vol = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_vol, 0);
 
 		int isec = _ttoi(hour);
 		int iprice = _ttoi(price);
-		int isign = _ttoi(sign);
+		int ivol = _ttoi(vol);
 
-		if (isign >= 5)
-			gotodown = true;
+		if (ivol <= 50000)
+			smallvol = true;
 
 		isec = hourToSec(isec);
 		
@@ -222,7 +222,7 @@ void CPrepareDlg::OnReceivedataScpc()
 	
 	double v = r.calculate();
 
-	if (v >= 0.0f && !gotodown) {
+	if (v >= 0.0f && !smallvol) {
 		FILE *out = fopen(writepath, "a");
 		if (out) {
 			fprintf(out,"%s\n",code[curidx]);
