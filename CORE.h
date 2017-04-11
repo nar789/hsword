@@ -109,7 +109,7 @@ public:
 		}
 		if (prc && ctrt && m && rltv) {
 
-			if (!acount.HaveStock() && ctrt >= X && m >= Z && rltv >= 100.0f) {//BUY
+			if (!acount.HaveStock() && ctrt >= X && rltv >= 500.0f) {//BUY
 					
 				Buy(prc);
 					
