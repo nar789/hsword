@@ -130,7 +130,7 @@ public:
 				}
 			}
 
-			if (acount.HaveStock() && r < -X)
+			if (acount.HaveStock() && r <= -Y)
 			{
 				Sell(prc);
 				return 0;

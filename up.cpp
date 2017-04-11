@@ -61,7 +61,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.4.4\n");
+	printf("UP v1.0.4.11\n");
 	env = getenv("HSWORD_HOME");	
 	strcpy(buypath, env);
 	strcat(buypath, "\\..\\1371\\buy.txt");
@@ -224,10 +224,10 @@ void Cswordtest9Dlg::Save() {
 		int h = cur->tm_hour;
 		int m = cur->tm_min;
 		int s = cur->tm_sec;
-		fprintf(out, "%02d:%02d:%02d %s %.1f\n", h, m, s, curcode[topcode], topratio);
+		fprintf(out, "%02d:%02d:%02d %s %.1f %.1f\n", h, m, s, curcode[topcode], topratio, toprltv);
 		fclose(out);
 	}
-	printf("\n%s %.1f\n", curcode[topcode], topratio);
+	printf("\n%s %.1f %.1f\n", curcode[topcode], topratio, toprltv);
 	codeidx = 0;
 	topratio = 0;
 	topcode = 0;
@@ -256,8 +256,9 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		float f = _ttof(ratio);
 		float f_rltv = _ttof(rltv);
-		if (f > topratio && f<20.0f && f_rltv >= 100.0f)
+		if (f_rltv > toprltv && f < 6.0f && f >= 4.0f && f_rltv >= 100.0f)
 		{
+			toprltv = f_rltv;
 			topratio = f;
 			topcode = codeidx;
 		}
