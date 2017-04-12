@@ -61,7 +61,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.4.11\n");
+	printf("UP v1.0.4.12\n");
 	env = getenv("HSWORD_HOME");	
 	strcpy(buypath, env);
 	strcat(buypath, "\\..\\1371\\buy.txt");
@@ -256,7 +256,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		float f = _ttof(ratio);
 		float f_rltv = _ttof(rltv);
-		if (f_rltv > toprltv && f < 6.0f && f >= 4.0f && f_rltv >= 100.0f)
+		if (( (f_rltv > toprltv) || ( (f_rltv == toprltv ) && (f >= topratio) ) ) && f >= 4.0f && f_rltv >= 100.0f)
 		{
 			toprltv = f_rltv;
 			topratio = f;
