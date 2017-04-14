@@ -202,27 +202,29 @@ void CPrepareDlg::OnReceivedataScpc()
 	const int feild_no_vol = 8;
 
 	bool  smallvol = false;
-	
+	int ivol = 0;
 	for (int i = 0; i < rc; i++) {
-		CString hour = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_hour, 0);
-		CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
+		//CString hour = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_hour, 0);
+		//CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
 		CString vol = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_vol, 0);
 
-		int isec = _ttoi(hour);
-		int iprice = _ttoi(price);
-		int ivol = _ttoi(vol);
+		//int isec = _ttoi(hour);
+		//int iprice = _ttoi(price);
+		ivol = _ttoi(vol);
 
-		if (ivol <= 50000)
+		if (ivol <= 50000) {
 			smallvol = true;
+			break;
+		}
 
-		isec = hourToSec(isec);
+		//isec = hourToSec(isec);
 		
-		r.save(isec, iprice);
+		//r.save(isec, iprice);
 	}
 	
-	double v = r.calculate();
+	//double v = r.calculate();
 	
-	if (v >= 0.0f && !smallvol) {
+	if (!smallvol) {
 		FILE *out = fopen(writepath, "a");
 		if (out) {
 			fprintf(out,"%s\n",code[curidx]);
@@ -232,7 +234,7 @@ void CPrepareDlg::OnReceivedataScpc()
 	else {
 		FILE *out = fopen(blackpath, "a");
 		if (out) {
-			fprintf(out, "%s %lf\n", code[curidx],v);
+			fprintf(out, "%s %d\n", code[curidx],ivol);
 			fclose(out);
 		}
 	}
