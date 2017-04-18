@@ -61,7 +61,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.4.12\n");
+	printf("UP v1.0.4.18\n");
 	env = getenv("HSWORD_HOME");	
 	strcpy(buypath, env);
 	strcat(buypath, "\\..\\1371\\buy.txt");
@@ -229,8 +229,9 @@ void Cswordtest9Dlg::Save() {
 	}
 	printf("\n%s %.1f %.1f\n", curcode[topcode], topratio, toprltv);
 	codeidx = 0;
-	topratio = 0;
 	topcode = 0;
+	topratio = 0.0f;
+	toprltv = 0.0f;
 	CallRank();
 }
 
