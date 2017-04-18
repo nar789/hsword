@@ -115,7 +115,9 @@ public:
 					
 			}
 			
-			double r = ((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
+			double r = 0.0f;
+			if(acount.GetStockPrice())
+				r=((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
 			
 			if (P) {
 				if (acount.HaveStock() && prc >= Y) {
