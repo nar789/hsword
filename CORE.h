@@ -10,6 +10,8 @@
 #define PORT 4
 #define ENDHOUR 12
 #define ENDMINUTE 30
+#define STARTHOUR 9
+#define STARTMINUTE 1
 #define CODEPOS 0
 class CORE {
 private:
@@ -48,7 +50,7 @@ public:
 			cur = localtime(&t);
 			printf("%02d:%02d\n",cur->tm_hour,cur->tm_min);
 
-			if (cur->tm_hour>=9) {
+			if (cur->tm_hour>=STARTHOUR && cur->tm_min>=STARTMINUTE) {
 				char file[255];
 				strcpy(file, env);
 				strcat(file, "\\up.txt");
