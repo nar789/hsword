@@ -251,13 +251,16 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		printf(".");
 	const int ratioidx = 6;
 	const int rltvidx = 5;
+	const int volidx = 4;
 	int recordcnt = itgrank.GetMultiRecordCount(0);
 	if (recordcnt >= 10) {
+		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
 		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
+		int ivol = _ttoi(vol);
 		float f = _ttof(ratio);
 		float f_rltv = _ttof(rltv);
-		if (( (f_rltv > toprltv) || ( (f_rltv == toprltv ) && (f >= topratio) ) ) && f >= 4.0f && f_rltv >= 100.0f)
+		if (( (f_rltv > toprltv) || ( (f_rltv == toprltv ) && (f >= topratio) ) ) && f >= 4.0f && f_rltv >= 180.0f && ivol >= 30000)
 		{
 			toprltv = f_rltv;
 			topratio = f;
