@@ -242,16 +242,18 @@ void Cswordtest9Dlg::CallRank() {
 		exit(0);
 	itgrank.SetSingleData(0, (_variant_t)"J");
 	itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
-	itgrank.RequestData((_variant_t)"SCPC");
+	itgrank.RequestData((_variant_t)"SCPC2");
 }
 
 void Cswordtest9Dlg::OnReceivedataItgrank()
 {	
 	if (codeidx % 5 == 0)
 		printf(".");
-	const int ratioidx = 6;
-	const int rltvidx = 5;
-	const int volidx = 4;
+	
+	const int ratioidx = 4;
+	const int volidx = 8;
+	const int rltvidx = 9;
+	
 	int recordcnt = itgrank.GetMultiRecordCount(0);
 	if (recordcnt >= 10) {
 		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);

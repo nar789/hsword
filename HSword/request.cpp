@@ -21,7 +21,7 @@ void Cswordtest2Dlg::init(CString id)
 	out = fopen("bin\\output.txt", "w");
 	m_ctlStockCur.SetSingleData(0, (_variant_t)"J");
 	m_ctlStockCur.SetSingleData(1, (_variant_t)id);
-	m_ctlStockCur.RequestData((_variant_t)"SCPC2");
+	m_ctlStockCur.RequestData((_variant_t)"SCPC");
 }
 
 
@@ -38,11 +38,11 @@ void Cswordtest2Dlg::ReceiveDataItgexpertctlctrl1()
 		CString ctrt;
 		time = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 0, 0);
 		price = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 1, 0);
-		vol = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 7, 0);
-		askp = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 5, 0);
-		bidp = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 6, 0);
-		rltv = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 9, 0);
-		ctrt = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 4, 0);
+		vol = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 4, 0);
+		askp = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 2, 0);
+		bidp = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 3, 0);
+		rltv = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 5, 0);
+		ctrt = (_variant_t)m_ctlStockCur.GetMultiData(0, i, 6, 0);
 		fprintf(out, "%S\t%S\t%S\t%S\t%S\t%S\t%S\n", time.GetBuffer(), price.GetBuffer(), vol.GetBuffer(), askp.GetBuffer(), bidp.GetBuffer(), rltv.GetBuffer(), ctrt.GetBuffer());
 	}
 	if (!reload())
@@ -57,7 +57,7 @@ bool Cswordtest2Dlg::reload() {
 	bool next = m_ctlStockCur.IsMoreNextData();
 	if (next)
 	{
-		m_ctlStockCur.RequestNextData((_variant_t)"SCPC2");
+		m_ctlStockCur.RequestNextData((_variant_t)"SCPC");
 		return true;
 	}
 	else
