@@ -61,7 +61,7 @@ BOOL Cswordtest9Dlg::OnInitDialog()
 
 void Cswordtest9Dlg::ArguProcessor() {
 	
-	printf("UP v1.0.4.18\n");
+	printf("UP v1.0.5.2\n");
 	env = getenv("HSWORD_HOME");	
 	strcpy(buypath, env);
 	strcat(buypath, "\\..\\1371\\buy.txt");
@@ -258,15 +258,19 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 	if (recordcnt >= 10) {
 		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
 		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
+		CString start_ratio = (_variant_t)itgrank.GetMultiData(0, 9, ratioidx, 0);
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		int ivol = _ttoi(vol);
 		float f = _ttof(ratio);
+		float start_f = _ttof(start_ratio);
 		float f_rltv = _ttof(rltv);
-		if (( (f_rltv > toprltv) || ( (f_rltv == toprltv ) && (f >= topratio) ) ) && f >= 4.0f && f_rltv >= 180.0f && ivol >= 30000)
-		{
-			toprltv = f_rltv;
-			topratio = f;
-			topcode = codeidx;
+		if (start_f<f) {
+			if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
+			{
+				toprltv = f_rltv;
+				topratio = f;
+				topcode = codeidx;
+			}
 		}
 	}
 	if (++codeidx < codecnt - 1) {
