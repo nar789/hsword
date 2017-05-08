@@ -11,7 +11,7 @@
 #define ENDHOUR 12
 #define ENDMINUTE 30
 #define STARTHOUR 9
-#define STARTMINUTE 0
+#define STARTMINUTE 10
 #define CODEPOS 0
 class CORE {
 private:
@@ -62,7 +62,9 @@ public:
 				}
 			}
 		}
+		
 		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {
+			
 			char uplog[255];
 			MakePath("uplog.txt", uplog);
 			FILE *in = fopen(uplog, "a");
@@ -70,6 +72,7 @@ public:
 				fprintf(in, "%s %02d:%02d:%02d\n", code, Utils::CurrentGetHour(), Utils::CurrentGetMinute(), Utils::CurrentGetSecond());
 				fclose(in);
 			}
+			
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
 		}
@@ -77,6 +80,7 @@ public:
 		{
 			sprintf(cmd, "hstcp %s -e", servername);
 			system(cmd);
+
 		}
 	}
 
@@ -139,6 +143,7 @@ public:
 				Sell(prc);
 				return 0;
 			}
+			
 			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
 			{
 				if(acount.HaveStock())
