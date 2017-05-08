@@ -208,10 +208,12 @@ void Cswordtest9Dlg::Save() {
 	strcpy(file, env);
 	strcat(file, "\\up.txt");
 	FILE *out = fopen(file, "w");
+	bool up = false;
 	if (out)
 	{
 		fprintf(out, "%s", curcode[topcode]);
 		fclose(out);
+		up = true;
 	}
 
 	strcpy(file, env);
@@ -224,6 +226,8 @@ void Cswordtest9Dlg::Save() {
 		int h = cur->tm_hour;
 		int m = cur->tm_min;
 		int s = cur->tm_sec;
+		if (up)
+			fprintf(out, "success ");
 		fprintf(out, "%02d:%02d:%02d %s %.1f %.1f\n", h, m, s, curcode[topcode], topratio, toprltv);
 		fclose(out);
 	}
