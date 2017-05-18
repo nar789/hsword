@@ -64,7 +64,7 @@ int __cdecl main(int argc, char **argv)
 
 	// Validate the parameters
 	if (argc < 2) {
-		printf("HSword TCP Client v1.0.2.23\n");
+		printf("HSword TCP Client v1.0.5.19\n");
 		printf("usage: %s server-name [-e] [-s ID Price Count] [-b ID Price Count] [-x ID]\n", argv[0]);
 		return 1;
 	}
@@ -208,8 +208,10 @@ int __cdecl main(int argc, char **argv)
 				char file[255];
 				MakePath("x.txt",file);
 				FILE *out = fopen(file, "w");
-				fprintf(out,"%s",recvbuf);
-				fclose(out);
+				if (out) {
+					fprintf(out, "%s", recvbuf);
+					fclose(out);
+				}
 			}
 		}
 		else if (iResult == 0)
