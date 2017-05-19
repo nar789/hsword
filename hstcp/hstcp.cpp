@@ -64,7 +64,7 @@ int __cdecl main(int argc, char **argv)
 
 	// Validate the parameters
 	if (argc < 2) {
-		printf("HSword TCP Client v1.0.5.19\n");
+		printf("HSword TCP Client v1.0.5.20\n");
 		printf("usage: %s server-name [-e] [-s ID Price Count] [-b ID Price Count] [-x ID]\n", argv[0]);
 		return 1;
 	}
@@ -200,9 +200,10 @@ int __cdecl main(int argc, char **argv)
 			return 1;
 		}
 		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-		recvbuf[iResult] = 0;
+		
 		
 		if (iResult > 0) {
+			recvbuf[iResult] = 0;
 			printf("Bytes received: %d[%s]\n", iResult, recvbuf);
 			if (type == X) {
 				char file[255];
@@ -226,10 +227,10 @@ int __cdecl main(int argc, char **argv)
 	// shutdown the connection since no more data will be sent
 	iResult = shutdown(ConnectSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-	printf("shutdown failed with error: %d\n", WSAGetLastError());
-	closesocket(ConnectSocket);
-	WSACleanup();
-	return 1;
+		printf("shutdown failed with error: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
 	}
 
 	// cleanup
