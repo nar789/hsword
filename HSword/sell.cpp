@@ -106,11 +106,13 @@ void Cswordtest2Dlg::OnReceivedataSdoc()
 void Cswordtest2Dlg::ChkedSell(CString id, CString price, CString cnt)
 {
 	FILE *log = fopen("bin\\log.txt", "a");
-	CTime t = CTime::GetCurrentTime();
-	CString time = t.Format(L"%Y-%m-%d %H:%M:%S");
-	fprintf(log, "S %S %S %S ", id, price, cnt);
-	fwprintf(log, L"%s\n", time.GetBuffer(time.GetLength()));
-	fclose(log);
+	if (log) {
+		CTime t = CTime::GetCurrentTime();
+		CString time = t.Format(L"%Y-%m-%d %H:%M:%S");
+		fprintf(log, "S %S %S %S ", id, price, cnt);
+		fwprintf(log, L"%s\n", time.GetBuffer(time.GetLength()));
+		fclose(log);
+	}
 	//CString acnt = (CString)"8816597701";
 	CString acnt = ACOUNT;
 	CString pass = (variant_t)m_sell.GetEncryptPassword((variant_t)PASSWORD);

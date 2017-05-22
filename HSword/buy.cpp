@@ -28,11 +28,13 @@ void Cswordtest2Dlg::OnClickedBtnBuy()
 
 void Cswordtest2Dlg::Buy(CString id, CString price, CString cnt) {
 	FILE *log = fopen("bin\\log.txt", "a");
-	CTime t = CTime::GetCurrentTime();
-	CString time = t.Format(L"%Y-%m-%d %H:%M:%S");
-	fprintf(log, "B %S %S %S ", id, price, cnt);
-	fwprintf(log, L"%s\n", time.GetBuffer(time.GetLength()));
-	fclose(log);
+	if (log) {
+		CTime t = CTime::GetCurrentTime();
+		CString time = t.Format(L"%Y-%m-%d %H:%M:%S");
+		fprintf(log, "B %S %S %S ", id, price, cnt);
+		fwprintf(log, L"%s\n", time.GetBuffer(time.GetLength()));
+		fclose(log);
+	}
 
 	CString acnt = ACOUNT;
 	CString pass = (variant_t)m_buy.GetEncryptPassword((variant_t)PASSWORD);
