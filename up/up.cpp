@@ -211,7 +211,7 @@ void Cswordtest9Dlg::Save() {
 	bool up = false;
 	if (out)
 	{
-		fprintf(out, "%s", curcode[topcode]);
+		fprintf(out, "%s %.2f", curcode[topcode], topratio);
 		fclose(out);
 		up = true;
 	}
@@ -268,6 +268,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		float f = _ttof(ratio);
 		float start_f = _ttof(start_ratio);
 		float f_rltv = _ttof(rltv);
+
 		if (start_f<f) {
 			if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
 			{
@@ -277,6 +278,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 			}
 		}
 	}
+	
 	if (++codeidx < codecnt - 1) {
 		CallRank();
 	}

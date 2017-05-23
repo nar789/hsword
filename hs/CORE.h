@@ -23,7 +23,10 @@ private:
 	int X =0;
 	int Y =0;
 	int Z = 0;
+	
 	char code[255];
+	double topratio=0.0f;
+
 	char servername[100];
 	char* env;
 	char port[255];
@@ -56,8 +59,8 @@ public:
 				strcat(file, "\\up.txt");
 				FILE *in = fopen(file, "r");
 				if (in) {
-					fscanf(in, "%s", code);
-					printf("code:%s\n", code);
+					fscanf(in, "%s %lf", code,&topratio);
+					printf("code:%s %.2f\n", code, topratio);
 					fclose(in);
 				}
 			}
@@ -115,7 +118,7 @@ public:
 		}
 		if (prc && ctrt && m && rltv) {
 
-			if (!acount.HaveStock() && ctrt >= X && rltv >= 180.0f) {//BUY
+			if (!acount.HaveStock() && ctrt >= X && rltv >= 180.0f && ctrt >= topratio) {//BUY
 					
 				Buy(prc);
 					
