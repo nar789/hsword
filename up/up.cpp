@@ -8,6 +8,9 @@
 #include "afxdialogex.h"
 #include <thread>
 
+#include "UTILS.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -241,11 +244,14 @@ void Cswordtest9Dlg::Save() {
 
 
 void Cswordtest9Dlg::CallRank() {
+	
 	FILE *buy = fopen(buypath, "r");
 	if (buy)
 		exit(0);
+		
 	itgrank.SetSingleData(0, (_variant_t)"J");
 	itgrank.SetSingleData(1, (_variant_t)curcode[codeidx]);
+	//itgrank.SetSingleData(1, (_variant_t)"004410");
 	itgrank.RequestData((_variant_t)"SCPC2");
 }
 
@@ -257,9 +263,11 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 	const int ratioidx = 4;
 	const int volidx = 8;
 	const int rltvidx = 9;
+	const int houridx = 0;
 	
 	int recordcnt = itgrank.GetMultiRecordCount(0);
 	if (recordcnt >= 10) {
+		CString hour = (_variant_t)itgrank.GetMultiData(0, 0, houridx, 0);
 		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
 		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
 		CString start_ratio = (_variant_t)itgrank.GetMultiData(0, 9, ratioidx, 0);
@@ -269,12 +277,14 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		float start_f = _ttof(start_ratio);
 		float f_rltv = _ttof(rltv);
 
-		if (start_f<f) {
-			if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
-			{
-				toprltv = f_rltv;
-				topratio = f;
-				topcode = codeidx;
+		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
+			if (start_f<f) {
+				if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
+				{
+					toprltv = f_rltv;
+					topratio = f;
+					topcode = codeidx;
+				}
 			}
 		}
 	}
