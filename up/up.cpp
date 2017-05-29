@@ -270,15 +270,25 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		CString hour = (_variant_t)itgrank.GetMultiData(0, 0, houridx, 0);
 		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
 		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
-		CString start_ratio = (_variant_t)itgrank.GetMultiData(0, 9, ratioidx, 0);
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		int ivol = _ttoi(vol);
 		float f = _ttof(ratio);
-		float start_f = _ttof(start_ratio);
+		
 		float f_rltv = _ttof(rltv);
 
+		int upcnt = 0;
+		for (int i = 1; i < 10; i++) {
+			CString start_ratio = (_variant_t)itgrank.GetMultiData(0, i, ratioidx, 0);
+			float start_f = _ttof(start_ratio);
+			if (f > start_f) {
+				upcnt++;
+			}
+		}
+
 		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
-			if (start_f<f) {
+
+			if ( upcnt >= 7 ) {
+
 				if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
 				{
 					toprltv = f_rltv;
