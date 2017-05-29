@@ -162,6 +162,7 @@ BEGIN_MESSAGE_MAP(Cswordtest2Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_S2, &Cswordtest2Dlg::OnClickedS2)
 	ON_BN_CLICKED(IDC_ALLSERVERSTOP, &Cswordtest2Dlg::OnClickedAllserverstop)
 	ON_BN_CLICKED(BTN_SMCO, &Cswordtest2Dlg::OnClickedBtnSmco)
+	ON_BN_CLICKED(IDC_req_scpc2, &Cswordtest2Dlg::OnClickedReqScpc2)
 END_MESSAGE_MAP()
 
 
