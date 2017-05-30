@@ -81,6 +81,7 @@ void Cswordtest9Dlg::ArguProcessor() {
 			t = time(NULL);
 			cur = localtime(&t);
 		}
+		once = false;
 		tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
 		OnClickedRank();
 	}
@@ -235,6 +236,7 @@ void Cswordtest9Dlg::Save() {
 		fclose(out);
 	}
 	printf("\n%s %.1f %.1f\n", curcode[topcode], topratio, toprltv);
+	once = true;
 	codeidx = 0;
 	topcode = 0;
 	topratio = 0.0f;
@@ -275,6 +277,9 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		float f = _ttof(ratio);
 		
 		float f_rltv = _ttof(rltv);
+		if (!once) {
+			start_rltv[codeidx] = f_rltv;
+		}
 
 		int upcnt = 0;
 		for (int i = 1; i < 10; i++) {
@@ -287,7 +292,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 
 		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-			if ( upcnt >= 7 ) {
+			if ( upcnt >= 6 && f_rltv > start_rltv[codeidx]) {
 
 				if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
 				{
