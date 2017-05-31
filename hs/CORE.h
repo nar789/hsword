@@ -162,8 +162,10 @@ public:
 		char file[255];
 		MakePath("buy.txt", file);
 		FILE *out = fopen(file, "w");
-		fprintf(out,"%s %d",code,prc);
-		fclose(out);
+		if (out) {
+			fprintf(out, "%s %d", code, prc);
+			fclose(out);
+		}
 	}
 
 	void load() {

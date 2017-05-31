@@ -133,7 +133,7 @@ public :
 					printf("send failed with error: %d\n", WSAGetLastError());
 					closesocket(ClientSocket);
 					WSACleanup();
-					return 1;
+					return 0;
 				}
 				printf("Bytes sent: %d[%s]\n", iSendResult, recvbuf);
 			}
@@ -154,7 +154,7 @@ public :
 			printf("shutdown failed with error: %d\n", WSAGetLastError());
 			closesocket(ClientSocket);
 			WSACleanup();
-			return 1;
+			return 0;
 		}
 
 		// cleanup

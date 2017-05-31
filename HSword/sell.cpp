@@ -3,22 +3,26 @@
 #include "swordtest2.h"
 #include "swordtest2Dlg.h"
 
-#define FIRSTSELL true
-#define SECONDSELL false
+#define BLOCK 2
+#define FIRSTSELL 1
+#define SECONDSELL 0
 
-bool sellStatus = FIRSTSELL;
+int sellStatus = FIRSTSELL;
 CString ORGN_ODNO;
 CString KRX_FWDG_ORD_ORGNO;
 
 void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
 
-	chkedid = id;
-	chkedprice = price;
-	chkedcnt = cnt;
+	
+	if (sellStatus != BLOCK) {
+		chkedid = id;
+		chkedprice = price;
+		chkedcnt = cnt;
+	}
 
 	if (sellStatus == FIRSTSELL) {
+		sellStatus = BLOCK;
 		OnBnClickedBtnSdoc();
-		sellStatus = SECONDSELL;
 	}
 	else if (sellStatus == SECONDSELL) {
 		OnClickedBtnSmco();
@@ -94,12 +98,13 @@ void Cswordtest2Dlg::OnReceivedataSdoc()
 	for (int i = 0; i < mc; i++) {
 		cnt = (_variant_t)m_sdoc.GetMultiData(0, i, 12, 0);
 	}
-	//printf("ChkedCnt:%S\n", cnt);
+	printf("ChkedCnt:%S - %S\n", chkedcnt, cnt);
 	if (cnt == chkedcnt) {
 		ChkedSell(chkedid, chkedprice, chkedcnt);
 	}
 	else {
 		OnBnClickedBtnSdoc();
+		Sleep(1000);
 	}
 }
 
@@ -145,6 +150,7 @@ void Cswordtest2Dlg::ReceiveDatasell()
 
 	ORGN_ODNO = get[1];
 	KRX_FWDG_ORD_ORGNO = get[0];
+	sellStatus = SECONDSELL;
 }
 
 
