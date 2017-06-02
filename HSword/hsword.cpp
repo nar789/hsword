@@ -58,7 +58,7 @@ void Cswordtest2Dlg::ServerThread() {
 	socket->ptr_x = &Cswordtest2Dlg::RequestX;
 	socket->lock = &lock;
 	while (!socket->run()) {
-		SwitchToThread();
+		Sleep(1);
 		if (!serverrun)
 			break;
 	}

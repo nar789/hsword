@@ -95,7 +95,7 @@ public:
 			return;
 		do{
 			GetCode();
-			SwitchToThread();
+			Sleep(1);
 		} while (Collect());
 	}
 
