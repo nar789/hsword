@@ -10,16 +10,16 @@
 #include <stdio.h>
 #include <string.h>
 #include "swordtest2Dlg.h"
-
-
+#include <mutex>
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
-// #pragma comment (lib, "Mswsock.lib")
+//#pragma comment (lib, "Mswsock.lib")
 
 #define DEFAULT_BUFLEN 512
 
 class Cswordtest2Dlg;
+
 class HSOCKET {
 
 private :
@@ -27,6 +27,7 @@ private :
 public :
 	char servermsg[100];
 	char port[255];
+	std::mutex* lock;
 
 	void SetPort(char* s) {
 		strcpy(port, s);
@@ -38,6 +39,7 @@ public :
 	void (Cswordtest2Dlg::*ptr_buy)(CString i, CString p,CString cnt);
 	void (Cswordtest2Dlg::*ptr_sell)(CString i, CString p,CString cnt);
 	void (Cswordtest2Dlg::*ptr_x)(CString i);
+	
 	int run(void) {
 		WSADATA wsaData;
 		int iResult;
@@ -163,7 +165,7 @@ public :
 		return 0;
 	}
 
-	char* CommandProcessor(char* str) {
+	char* HSOCKET::CommandProcessor(char* str) {
 		if (str[0] == 'x')
 		{
 			int idx = 0;
@@ -173,21 +175,31 @@ public :
 				id[idx++] = str[i];
 			}
 			id[idx] = 0;
-			memset(servermsg, 0, sizeof(servermsg));
+			
+			lock->lock();
+				memset(servermsg, 0, sizeof(servermsg));
+			lock->unlock();
+
 			x(id);
 			for (int i = 0; i < 2000; i++) {
+				lock->lock();
 				if (!strcmp(servermsg, "")) {
 					printf(".");
+					lock->unlock();
 					continue;
 				}
+				lock->unlock();
 				break;
 			}
 			printf("\n");
-			if (!strcmp(servermsg, ""))
-				strcpy(servermsg, "0 0 0");
-			printf("%s\n",servermsg);
-			memset(str,0, sizeof(str));
-			strcpy(str, servermsg);
+			lock->lock();
+				if (!strcmp(servermsg, ""))
+					strcpy(servermsg, "0 0 0");
+				printf("%s\n", servermsg);
+				memset(str, 0, sizeof(str));
+				strcpy(str, servermsg);
+			lock->unlock();
+
 		}
 		else if (str[0] == 'e') {
 			strcpy(str, "Connection state is good.");
@@ -212,7 +224,7 @@ public :
 			}
 			price[idx] = 0;
 			idx = 0;
-			for (int i = strlen(id) + strlen(price) + 2 +4; i < strlen(str); i++)
+			for (int i = strlen(id) + strlen(price) + 2 + 4; i < strlen(str); i++)
 			{
 				cnt[idx++] = str[i];
 			}
@@ -240,12 +252,12 @@ public :
 			}
 			price[idx] = 0;
 			idx = 0;
-			for (int i = strlen(id) + strlen(price) +2+ 5; i < strlen(str); i++)
+			for (int i = strlen(id) + strlen(price) + 2 + 5; i < strlen(str); i++)
 			{
 				cnt[idx++] = str[i];
 			}
 			cnt[idx] = 0;
-			sell(id, price,cnt);
+			sell(id, price, cnt);
 			strcpy(str, "Sell request is complete!");
 		}
 		else {
@@ -253,6 +265,8 @@ public :
 		}
 		return str;
 	}
+
+	
 
 	void buy(char* id, char* price,char* cnt)
 	{
@@ -280,3 +294,5 @@ public :
 		(dlg->*ptr_x)(_i);
 	}
 };
+
+

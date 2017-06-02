@@ -4,8 +4,6 @@
 #include "swordtest2.h"
 #include "swordtest2Dlg.h"
 
-
-
 void Cswordtest2Dlg::OnBnClickedBtnScpc2()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -33,7 +31,10 @@ void Cswordtest2Dlg::OnReceivedataScpc2()
 	CString ctrt = (variant_t)m_scpc2.GetMultiData(0, 0, ctrtidx, 0);
 	CString m = (variant_t)m_scpc2.GetMultiData(0, 0, midx, 0);
 	CString rltv = (variant_t)m_scpc2.GetMultiData(0, 0, rltvidx, 0);
-	sprintf(socket->servermsg, "%S %S %S %S", prc, ctrt, m, rltv);
+	
+	lock.lock();
+		sprintf(socket->servermsg, "%S %S %S %S", prc, ctrt, m, rltv);
+	lock.unlock();
 }
 
 void Cswordtest2Dlg::OnReceiveerrordataScpc2()

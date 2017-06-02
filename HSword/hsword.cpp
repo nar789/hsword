@@ -56,6 +56,7 @@ void Cswordtest2Dlg::ServerThread() {
 	socket->ptr_buy = &Cswordtest2Dlg::Buy;
 	socket->ptr_sell = &Cswordtest2Dlg::Sell;
 	socket->ptr_x = &Cswordtest2Dlg::RequestX;
+	socket->lock = &lock;
 	while (!socket->run()) {
 		if (!serverrun)
 			break;
