@@ -65,15 +65,17 @@ void Cswordtest2Dlg::ServerThread() {
 
 void Cswordtest2Dlg::OnBnClickedServerStop()
 {
-	if (socket != NULL)
-	{
-		socket = NULL;
-	}
-	if (server != NULL) {
-		this->serverrun = false;
-		server = NULL;
-		printf(">Stop listening.\n");
-	}
+	lock.lock();
+		if (socket != NULL)
+		{
+			socket = NULL;
+		}
+		if (server != NULL) {
+			this->serverrun = false;
+			server = NULL;
+			printf(">Stop listening.\n");
+		}
+	lock.unlock();
 
 }
 
