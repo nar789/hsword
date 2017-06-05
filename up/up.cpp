@@ -232,7 +232,7 @@ void Cswordtest9Dlg::Save() {
 		int s = cur->tm_sec;
 		if (up)
 			fprintf(out, "success ");
-		fprintf(out, "%02d:%02d:%02d %s %.1f %.1f\n", h, m, s, curcode[topcode], topratio, toprltv);
+		fprintf(out, "%02d:%02d:%02d %s %.2f %.2f %.2f\n", h, m, s, curcode[topcode], topratio, toprltv, start_rltv[topcode]);
 		fclose(out);
 	}
 	printf("\n%s %.1f %.1f\n", curcode[topcode], topratio, toprltv);
@@ -281,20 +281,11 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 			start_rltv[codeidx] = f_rltv;
 		}
 
-		int upcnt = 0;
-		for (int i = 1; i < 10; i++) {
-			CString start_ratio = (_variant_t)itgrank.GetMultiData(0, i, ratioidx, 0);
-			float start_f = _ttof(start_ratio);
-			if (f > start_f) {
-				upcnt++;
-			}
-		}
-
 		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-			if ( upcnt >= 6 && f_rltv > start_rltv[codeidx]) {
+			if ( f_rltv >= start_rltv[codeidx]) {
 
-				if (((f_rltv > toprltv) || ((f_rltv == toprltv) && (f >= topratio))) && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
+				if ( f >= topratio && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
 				{
 					toprltv = f_rltv;
 					topratio = f;
