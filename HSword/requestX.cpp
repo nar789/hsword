@@ -4,6 +4,8 @@
 #include "swordtest2.h"
 #include "swordtest2Dlg.h"
 
+bool msglock = false;
+
 void Cswordtest2Dlg::OnBnClickedBtnScpc2()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
@@ -14,10 +16,17 @@ void Cswordtest2Dlg::OnBnClickedBtnScpc2()
 }
 
 void Cswordtest2Dlg::RequestX(CString id) {
+
+	while (msglock) {
+		Sleep(1000);
+	}
+
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)id);
 	m_scpc2.RequestData((variant_t)"SCPC");
 	printf("SCPC request<%S>\n", id);
+	msglock = true;
+	
 }
 
 void Cswordtest2Dlg::OnReceivedataScpc2()
@@ -35,6 +44,7 @@ void Cswordtest2Dlg::OnReceivedataScpc2()
 	lock.lock();
 		sprintf(socket->servermsg, "%S %S %S %S", prc, ctrt, m, rltv);
 	lock.unlock();
+	msglock = false;
 }
 
 void Cswordtest2Dlg::OnReceiveerrordataScpc2()
