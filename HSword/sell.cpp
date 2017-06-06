@@ -8,8 +8,10 @@
 #define SECONDSELL 0
 
 int sellStatus = FIRSTSELL;
+bool chklock = true;
 CString ORGN_ODNO;
 CString KRX_FWDG_ORD_ORGNO;
+
 
 void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
 
@@ -22,7 +24,7 @@ void Cswordtest2Dlg::Sell(CString id, CString price, CString cnt) {
 
 	if (sellStatus == FIRSTSELL) {
 		sellStatus = BLOCK;
-		OnBnClickedBtnSdoc();
+		t_chksdoc=new thread(&Cswordtest2Dlg::ChkSDOC, this);
 	}
 	else if (sellStatus == SECONDSELL) {
 		OnClickedBtnSmco();
@@ -62,6 +64,13 @@ void Cswordtest2Dlg::OnReceivedataSmco()
 	printf("주문시각 : %d\n", get[2]);
 }
 
+void Cswordtest2Dlg::ChkSDOC() {
+	while (chklock) {
+		OnBnClickedBtnSdoc();
+		Sleep(1000);
+	}
+}
+
 
 void Cswordtest2Dlg::OnBnClickedBtnSdoc()
 {
@@ -91,6 +100,8 @@ void Cswordtest2Dlg::OnBnClickedBtnSdoc()
 	//printf("SDOC request\n");
 }
 
+
+
 void Cswordtest2Dlg::OnReceivedataSdoc()
 {
 	int mc = m_sdoc.GetMultiRecordCount(0);
@@ -100,11 +111,8 @@ void Cswordtest2Dlg::OnReceivedataSdoc()
 	}
 	printf("ChkedCnt:%S - %S\n", chkedcnt, cnt);
 	if (cnt == chkedcnt) {
+		chklock = false;
 		ChkedSell(chkedid, chkedprice, chkedcnt);
-	}
-	else {
-		OnBnClickedBtnSdoc();
-		Sleep(1000);
 	}
 }
 

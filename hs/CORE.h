@@ -75,7 +75,7 @@ public:
 				fprintf(in, "%s %02d:%02d:%02d\n", code, Utils::CurrentGetHour(), Utils::CurrentGetMinute(), Utils::CurrentGetSecond());
 				fclose(in);
 			}
-			
+			printf("%s %s\n",servername,code);
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
 		}
@@ -118,7 +118,7 @@ public:
 			return 0;
 		}
 		if (prc && ctrt && m && rltv) {
-
+			
 			if (!acount.HaveStock() && ctrt >= X && rltv >= 180.0f && ctrt >= topratio) {//BUY
 					
 				Buy(prc);
