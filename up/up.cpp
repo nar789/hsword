@@ -82,7 +82,7 @@ void Cswordtest9Dlg::ArguProcessor() {
 			cur = localtime(&t);
 		}
 		once = false;
-		tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
+		//tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
 		OnClickedRank();
 	}
 }
