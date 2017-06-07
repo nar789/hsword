@@ -64,16 +64,19 @@ void Cswordtest2Dlg::OnReceivedataSmco()
 	printf("주문시각 : %d\n", get[2]);
 }
 
+bool sdocrun = false;
 void Cswordtest2Dlg::ChkSDOC() {
 	while (chklock) {
-		OnBnClickedBtnSdoc();
 		Sleep(1000);
+		if(!sdocrun)
+			OnBnClickedBtnSdoc();
 	}
 }
 
 
 void Cswordtest2Dlg::OnBnClickedBtnSdoc()
 {
+	sdocrun = true;
 	time_t t = time(NULL);
 	tm* today;
 	today = localtime(&t);
@@ -114,6 +117,7 @@ void Cswordtest2Dlg::OnReceivedataSdoc()
 		chklock = false;
 		ChkedSell(chkedid, chkedprice, chkedcnt);
 	}
+	sdocrun = false;
 }
 
 void Cswordtest2Dlg::ChkedSell(CString id, CString price, CString cnt)
