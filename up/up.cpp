@@ -275,15 +275,15 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
 		int ivol = _ttoi(vol);
 		float f = _ttof(ratio);
-		
 		float f_rltv = _ttof(rltv);
+
 		if (!once) {
-			start_rltv[codeidx] = f_rltv;
+			start_rltv[codeidx] = f;
 		}
 
 		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-			if ( f_rltv >= start_rltv[codeidx]) {
+			if ( f >= start_rltv[codeidx]) {
 
 				if ( f >= topratio && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
 				{
