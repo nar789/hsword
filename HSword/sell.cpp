@@ -43,8 +43,8 @@ void Cswordtest2Dlg::OnClickedBtnSmco()
 	m_smco.SetSingleData(4, (_variant_t)ORGN_ODNO);
 	m_smco.SetSingleData(5, (_variant_t)"01");
 	m_smco.SetSingleData(6, (_variant_t)"01");
-	m_smco.SetSingleData(7, (_variant_t)chkedcnt);
-	m_smco.SetSingleData(8, (_variant_t)chkedprice);
+	m_smco.SetSingleData(7, (_variant_t)"");
+	m_smco.SetSingleData(8, (_variant_t)"");
 	m_smco.SetSingleData(9, (_variant_t)"Y");
 	m_smco.SetSingleData(10, (_variant_t)"01036906736");
 
@@ -152,16 +152,20 @@ void Cswordtest2Dlg::ReceiveDatasell()
 
 	printf("Sell request receive start.\n");
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	CString get[3];
+	CString time;
 	for (int i = 0; i < 3; i++) {
-		get[i] = (_variant_t)m_sell.GetSingleData(i, 0);
+		if(i==0)
+			KRX_FWDG_ORD_ORGNO = (_variant_t)m_sell.GetSingleData(i, 0);
+		else if(i==1)
+			ORGN_ODNO = (_variant_t)m_sell.GetSingleData(i, 0);
+		else
+			time = (_variant_t)m_sell.GetSingleData(i, 0);
 	}
-	printf("한국거래소전송주문조직번호 : %d\n", get[0]);
-	printf("주문번호 : %d\n", get[1]);
-	printf("주문시각 : %d\n", get[2]);
+	
+	printf("한국거래소전송주문조직번호 : %S\n", KRX_FWDG_ORD_ORGNO);
+	printf("주문번호 : %S\n", ORGN_ODNO);
+	printf("주문시각 : %S\n", time);
 
-	ORGN_ODNO = get[1];
-	KRX_FWDG_ORD_ORGNO = get[0];
 	sellStatus = SECONDSELL;
 }
 
