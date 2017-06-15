@@ -18,25 +18,27 @@ void Cswordtest2Dlg::RequestX(CString id) {
 
 	m_scpc2.SetSingleData(0, (variant_t)"J");
 	m_scpc2.SetSingleData(1, (variant_t)id);
-	m_scpc2.RequestData((variant_t)"SCPC");
+	m_scpc2.RequestData((variant_t)"SCP");
 	printf("SCPC request<%S>\n", id);
 	
 }
 
 void Cswordtest2Dlg::OnReceivedataScpc2()
 {
-	const int prcidx = 1;
-	const int ctrtidx = 6;
-	const int midx = 4;
-	const int rltvidx = 5;
+	const int prcidx = 11;
+	const int ctrtidx = 14;
+	const int hgpridx = 19;
+	//const int midx = 4;
+	//const int rltvidx = 5;
 
 	CString prc = (variant_t)m_scpc2.GetMultiData(0, 0, prcidx, 0);
 	CString ctrt = (variant_t)m_scpc2.GetMultiData(0, 0, ctrtidx, 0);
-	CString m = (variant_t)m_scpc2.GetMultiData(0, 0, midx, 0);
-	CString rltv = (variant_t)m_scpc2.GetMultiData(0, 0, rltvidx, 0);
+	CString hgpr = (variant_t)m_scpc2.GetMultiData(0, 0, hgpridx, 0);
+	//CString m = (variant_t)m_scpc2.GetMultiData(0, 0, midx, 0);
+	//CString rltv = (variant_t)m_scpc2.GetMultiData(0, 0, rltvidx, 0);
 	
 	lock.lock();
-		sprintf(socket->servermsg, "%S %S %S %S", prc, ctrt, m, rltv);
+		sprintf(socket->servermsg, "%S %S %S", prc, ctrt, hgpr);
 	lock.unlock();
 }
 

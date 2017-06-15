@@ -81,7 +81,6 @@ void Cswordtest9Dlg::ArguProcessor() {
 			t = time(NULL);
 			cur = localtime(&t);
 		}
-		once = false;
 		//tchkcall = new std::thread(&Cswordtest9Dlg::CheckCall, this);
 		OnClickedRank();
 	}
@@ -232,11 +231,10 @@ void Cswordtest9Dlg::Save() {
 		int s = cur->tm_sec;
 		if (up)
 			fprintf(out, "success ");
-		fprintf(out, "%02d:%02d:%02d %s %.2f %.2f %.2f\n", h, m, s, curcode[topcode], topratio, toprltv, start_rltv[topcode]);
+		fprintf(out, "%02d:%02d:%02d %s %.2f %.2f\n", h, m, s, curcode[topcode], topratio, toprltv);
 		fclose(out);
 	}
 	printf("\n%s %.1f %.1f\n", curcode[topcode], topratio, toprltv);
-	once = true;
 	codeidx = 0;
 	topcode = 0;
 	topratio = 0.0f;
@@ -277,20 +275,13 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 		float f = _ttof(ratio);
 		float f_rltv = _ttof(rltv);
 
-		if (!once) {
-			start_rltv[codeidx] = f;
-		}
-
 		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-			if ( f >= start_rltv[codeidx]) {
-
-				if ( f >= topratio && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
-				{
-					toprltv = f_rltv;
-					topratio = f;
-					topcode = codeidx;
-				}
+			if ( f >= topratio && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
+			{
+				toprltv = f_rltv;
+				topratio = f;
+				topcode = codeidx;
 			}
 		}
 	}

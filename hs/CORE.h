@@ -106,20 +106,22 @@ public:
 		MakePath("x.txt", file);
 		FILE *in=fopen(file, "r");
 		int prc=0;
-		double rltv = 0;
+		//double rltv = 0;
 		double ctrt=0;
-		long long m = 0;
+		int hgpr = 0;
+		//long long m = 0;
 		if (in) {
-			fscanf(in, "%d %lf %lld %lf", &prc, &ctrt, &m, &rltv);
+			//fscanf(in, "%d %lf %lld %lf", &prc, &ctrt, &m, &rltv);
+			fscanf(in, "%d %lf %d", &prc, &ctrt, &hgpr);
 			fclose(in);
 		}
 		else {
 			printf("x.txt read fail.\n");
 			return 0;
 		}
-		if (prc && ctrt && m && rltv) {
-			
-			if (!acount.HaveStock() && ctrt >= X && rltv >= 180.0f && ctrt >= topratio) {//BUY
+		if (prc && ctrt && hgpr) {
+			double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
+			if (!acount.HaveStock() && ctrt >= X && hr <= 2.0f ) {//BUY
 					
 				Buy(prc);
 					
@@ -147,13 +149,13 @@ public:
 				Sell(prc);
 				return 0;
 			}
-			
+			/*
 			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
 			{
 				if(acount.HaveStock())
 					Sell(prc);
 				return 0;
-			}
+			}*/
 		}
 		
 		return 1;
