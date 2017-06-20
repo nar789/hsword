@@ -265,24 +265,22 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 	const int rltvidx = 9;
 	const int houridx = 0;
 	
-	int recordcnt = itgrank.GetMultiRecordCount(0);
-	if (recordcnt >= 10) {
-		CString hour = (_variant_t)itgrank.GetMultiData(0, 0, houridx, 0);
-		CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
-		CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
-		CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
-		int ivol = _ttoi(vol);
-		float f = _ttof(ratio);
-		float f_rltv = _ttof(rltv);
+	//int recordcnt = itgrank.GetMultiRecordCount(0);
+	CString hour = (_variant_t)itgrank.GetMultiData(0, 0, houridx, 0);
+	CString vol = (_variant_t)itgrank.GetMultiData(0, 0, volidx, 0);
+	CString ratio = (_variant_t)itgrank.GetMultiData(0, 0, ratioidx, 0);
+	CString rltv= (_variant_t)itgrank.GetMultiData(0, 0, rltvidx, 0);
+	int ivol = _ttoi(vol);
+	float f = _ttof(ratio);
+	float f_rltv = _ttof(rltv);
 
-		if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
+	if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-			if ( f >= topratio && f >= 2.0f && f_rltv >= 180.0f && ivol >= 30000)
-			{
-				toprltv = f_rltv;
-				topratio = f;
-				topcode = codeidx;
-			}
+		if ( f >= topratio && f >= 2.0f && f <= 7.0f && f_rltv >= 180.0f && ivol >= 30000)
+		{
+			toprltv = f_rltv;
+			topratio = f;
+			topcode = codeidx;
 		}
 	}
 	
