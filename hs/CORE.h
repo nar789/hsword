@@ -94,7 +94,16 @@ public:
 		if (strlen(port) != PORT)
 			return;
 		do{
-			GetCode();
+			MSG msg;
+			if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+			{
+				GetMessage(&msg, NULL, 0, 0);
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+			else {
+				GetCode();
+			}
 			Sleep(1);
 		} while (Collect());
 	}
