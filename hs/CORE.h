@@ -95,7 +95,7 @@ public:
 			return;
 		do{
 			MSG msg;
-			if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
 				GetMessage(&msg, NULL, 0, 0);
 				TranslateMessage(&msg);
