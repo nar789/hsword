@@ -213,6 +213,12 @@ int __cdecl main(int argc, char **argv)
 					fprintf(out, "%s", recvbuf);
 					fclose(out);
 				}
+				MakePath("xlog.txt", file);
+				out = fopen(file, "a");
+				if (out) {
+					fprintf(out, "%s\n", recvbuf);
+					fclose(out);
+				}
 			}
 		}
 		else if (iResult == 0)
