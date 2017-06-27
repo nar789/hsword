@@ -129,8 +129,8 @@ public:
 			return 0;
 		}
 		if (prc && ctrt && hgpr) {
-			double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
-			if (!acount.HaveStock() && ctrt >= X && hr <= 2.0f ) {//BUY
+			//double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
+			if (!acount.HaveStock() && ctrt >= X && prc==hgpr ) {//BUY
 					
 				Buy(prc);
 					
