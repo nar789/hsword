@@ -147,7 +147,8 @@ public:
 			}
 			else {
 				if (acount.HaveStock() && r>= Y) {//SELL
-					Sell(prc);
+					//Sell(prc);
+					acount.Sell(prc, acount.GetStockCnt());
 					return 0;
 				}
 			}
