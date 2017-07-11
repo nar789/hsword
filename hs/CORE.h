@@ -97,7 +97,6 @@ public:
 			MSG msg;
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
-				GetMessage(&msg, NULL, 0, 0);
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
