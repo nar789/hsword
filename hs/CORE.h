@@ -83,7 +83,6 @@ public:
 		{
 			sprintf(cmd, "hstcp %s -e", servername);
 			system(cmd);
-
 		}
 	}
 
@@ -97,11 +96,18 @@ public:
 			MSG msg;
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
+				if (msg.message == WM_QUIT) {
+					printf("\bye.\n");
+					break;
+				}
+				else {
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				}
 			}
 			else {
 				GetCode();
+				fflush(stdout);
 			}
 			Sleep(1);
 		} while (Collect());
