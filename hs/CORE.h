@@ -54,6 +54,11 @@ public:
 			printf("%02d:%02d\n",cur->tm_hour,cur->tm_min);
 
 			if (cur->tm_hour>=STARTHOUR && cur->tm_min>=STARTMINUTE) {
+				if (cur->tm_min >= STARTMINUTE + 1) {
+					printf("\nLimit time is over.\n");
+					fflush(stdout);
+					exit(0);
+				}
 				char file[255];
 				strcpy(file, env);
 				strcat(file, "\\up.txt");
