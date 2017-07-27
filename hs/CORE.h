@@ -30,6 +30,8 @@ private:
 	char servername[100];
 	char* env;
 	char port[255];
+
+	int cnt = 0;
 	
 public:
 
@@ -54,7 +56,8 @@ public:
 			printf("%02d:%02d\n",cur->tm_hour,cur->tm_min);
 
 			if (cur->tm_hour>=STARTHOUR && cur->tm_min>=STARTMINUTE) {
-				if (cur->tm_min >= STARTMINUTE + 1) {
+				
+				if (cur->tm_min >= STARTMINUTE + 30) {
 					printf("\nLimit time is over.\n");
 					fflush(stdout);
 					exit(0);
@@ -63,6 +66,7 @@ public:
 				strcpy(file, env);
 				strcat(file, "\\up.txt");
 				FILE *in = fopen(file, "r");
+
 				if (in) {
 					fscanf(in, "%s %lf", code,&topratio);
 					printf("code:%s %.2f\n", code, topratio);
@@ -113,7 +117,9 @@ public:
 			else {
 				GetCode();
 				fflush(stdout);
+				//system("cls");
 			}
+			printf("[%d]",cnt++);
 			Sleep(1);
 		} while (Collect());
 	}
