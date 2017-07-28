@@ -202,18 +202,24 @@ void CPrepareDlg::OnReceivedataScpc()
 	const int feild_no_vol = 8;
 
 	bool  smallvol = false;
+	bool highprc = false;
 	int ivol = 0;
+	int iprc = 0;
 	for (int i = 0; i < rc; i++) {
 		//CString hour = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_hour, 0);
-		//CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
+		CString price = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_curPrice, 0);
 		CString vol = (_variant_t)m_scpc.GetMultiData(0, i, feild_no_vol, 0);
 
 		//int isec = _ttoi(hour);
-		//int iprice = _ttoi(price);
+		iprc = _ttoi(price);
 		ivol = _ttoi(vol);
 
 		if (ivol <= 50000) {
 			smallvol = true;
+			break;
+		}
+		if (iprc >= 20000) {
+			highprc = true;
 			break;
 		}
 
@@ -224,7 +230,7 @@ void CPrepareDlg::OnReceivedataScpc()
 	
 	//double v = r.calculate();
 	
-	if (!smallvol) {
+	if (!smallvol && !highprc) {
 		FILE *out = fopen(writepath, "a");
 		if (out) {
 			fprintf(out,"%s\n",code[curidx]);
@@ -234,7 +240,7 @@ void CPrepareDlg::OnReceivedataScpc()
 	else {
 		FILE *out = fopen(blackpath, "a");
 		if (out) {
-			fprintf(out, "%s %d\n", code[curidx],ivol);
+			fprintf(out, "%s %d %d\n", code[curidx],ivol,iprc);
 			fclose(out);
 		}
 	}

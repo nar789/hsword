@@ -277,11 +277,11 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 	float f = _ttof(ratio);
 	float f_rltv = _ttof(rltv);
 	int iprc = _ttoi(prc);
-	const int TOTALSIZE = 50000000;
+	const int TOTALSIZE = 100000000;
 
 	if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-		if ( f >= topratio && f >= 1.0f && f < 3.0f && f_rltv > 110.0f && (ivol*iprc) >= TOTALSIZE)
+		if ( f >= topratio && f >= 1.0f && f < 4.0f && f_rltv > 110.0f && (ivol*iprc) >= TOTALSIZE)
 		{
 			toprltv = f_rltv;
 			topratio = f;
