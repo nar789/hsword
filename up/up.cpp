@@ -281,7 +281,7 @@ void Cswordtest9Dlg::OnReceivedataItgrank()
 
 	if (abs(_ttoi(hour.Mid(2, 2)) - Utils::CurrentGetMinute()) <= 1) {
 
-		if ( f >= topratio && f >= 1.0f && f < 4.0f && f_rltv > 110.0f && (ivol*iprc) >= TOTALSIZE)
+		if ( f >= topratio && f >= 1.0f && f_rltv > 110.0f && (ivol*iprc) >= TOTALSIZE)
 		{
 			toprltv = f_rltv;
 			topratio = f;
