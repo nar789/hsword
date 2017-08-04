@@ -11,7 +11,7 @@
 #define ENDHOUR 12
 #define ENDMINUTE 30
 #define STARTHOUR 9
-#define STARTMINUTE 1
+#define STARTMINUTE 0
 #define CODEPOS 0
 class CORE {
 private:
