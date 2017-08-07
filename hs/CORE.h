@@ -146,7 +146,8 @@ public:
 		}
 		if (prc && ctrt && hgpr) {
 			//double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
-			if (!acount.HaveStock() && ctrt >= X && prc==hgpr ) {//BUY
+			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 3.0f) ? true : false;
+			if (!acount.HaveStock() && ctrt >= X && close ) {//BUY
 					
 				Buy(prc);
 					
