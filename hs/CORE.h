@@ -11,7 +11,7 @@
 #define ENDHOUR 12
 #define ENDMINUTE 30
 #define STARTHOUR 9
-#define STARTMINUTE 0
+#define STARTMINUTE 1
 #define CODEPOS 0
 class CORE {
 private:
@@ -146,7 +146,7 @@ public:
 		}
 		if (prc && ctrt && hgpr) {
 			//double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
-			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 3.0f) ? true : false;
+			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 1.0f) ? true : false;
 			if (!acount.HaveStock() && ctrt >= X && close ) {//BUY
 					
 				Buy(prc);
@@ -156,7 +156,7 @@ public:
 			double r = 0.0f;
 			if(acount.GetStockPrice())
 				r=((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
-			
+			double YY = 1.5f;
 			if (P) {
 				if (acount.HaveStock() && prc >= Y) {
 					Sell(prc);
@@ -164,14 +164,15 @@ public:
 				}
 			}
 			else {
-				if (acount.HaveStock() && r>= Y) {//SELL
+				
+				if (acount.HaveStock() && r>= YY) {//SELL
 					//Sell(prc);
 					acount.Sell(prc, acount.GetStockCnt());
 					return 0;
 				}
 			}
 
-			if (acount.HaveStock() && r <= -Y)
+			if (acount.HaveStock() && r <= -YY)
 			{
 				Sell(prc);
 				return 0;
