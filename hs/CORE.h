@@ -1,42 +1,36 @@
 #pragma once
 #include<stdio.h>
+#include <iostream>
 #include "ACOUNT.h"
 #include "UTILS.h"
 #include<Windows.h>
+#include <cmath>
 
 #define PERCENT false
 #define PRICE true
 #define CODE 6
 #define PORT 4
-#define ENDHOUR 12
-#define ENDMINUTE 30
 #define STARTHOUR 9
 #define STARTMINUTE 1
 #define CODEPOS 0
+
+using namespace std;
+
 class CORE {
 private:
 
 	ACOUNT acount;
-	
-	bool D = false;
-	bool P = false; 
-	int X =0;
-	int Y =0;
-	int Z = 0;
-	
+	bool D = false; bool P = false; 
+	int X =0;int Y =0;int Z = 0;
 	char code[255];
 	double topratio=0.0f;
-
 	char servername[100];
 	char* env;
 	char port[255];
-
 	int cnt = 0;
 	
 public:
-
 	void SetP(bool p) { P = p; }
-
 	void MakePath(char* filename,char *ret) {
 		strcpy(ret, env);
 		strcat(ret, "\\..\\");
@@ -44,24 +38,16 @@ public:
 		strcat(ret, "\\");
 		strcat(ret, filename);
 	}
-
 	void GetCode() {
 		char cmd[255];
 		if (!acount.HaveStock())
 		{
 			strcpy(code, "");
-			time_t t = time(NULL);
-			tm* cur;
-			cur = localtime(&t);
-			printf("%02d:%02d\n",cur->tm_hour,cur->tm_min);
-
-			if (cur->tm_hour>=STARTHOUR && cur->tm_min>=STARTMINUTE) {
+			printf("%02d:%02d\n",Utils::CurrentGetHour(),Utils::CurrentGetMinute());
+			if (Utils::CurrentGetHour()>=STARTHOUR && Utils::CurrentGetMinute()>=STARTMINUTE) {
 				
-				if (cur->tm_min >= STARTMINUTE + 30) {
-					printf("\nLimit time is over.\n");
-					fflush(stdout);
-					exit(0);
-				}
+				if (Utils::CurrentGetMinute() >= STARTMINUTE + 30) {printf("\nLimit time is over.\n");exit(0);}
+
 				char file[255];
 				strcpy(file, env);
 				strcat(file, "\\up.txt");
@@ -73,6 +59,7 @@ public:
 					fclose(in);
 				}
 			}
+			else return;
 		}
 		
 		if (strlen(code)==CODE && code[0]>='0' && code[0]<='9') {
@@ -88,39 +75,27 @@ public:
 			sprintf(cmd, "hstcp %s -x %s", servername, code);
 			system(cmd);
 		}
-		else
-		{
-			sprintf(cmd, "hstcp %s -e", servername);
-			system(cmd);
-		}
 	}
 
 	void Run() {
 		
 		printf("%s\n", servername);
 		load();
-		if (strlen(port) != PORT)
-			return;
+		if (strlen(port) != PORT)return;
 		do{
 			MSG msg;
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 			{
-				if (msg.message == WM_QUIT) {
-					printf("\bye.\n");
-					break;
-				}
-				else {
-					TranslateMessage(&msg);
-					DispatchMessage(&msg);
-				}
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
 			}
 			else {
 				GetCode();
 				fflush(stdout);
-				//system("cls");
 			}
 			printf("[%d]",cnt++);
-			Sleep(1);
+			if (cnt > pow(10, 8))cnt = 0;
+			Sleep(10);
 		} while (Collect());
 	}
 
@@ -131,61 +106,29 @@ public:
 		MakePath("x.txt", file);
 		FILE *in=fopen(file, "r");
 		int prc=0;
-		//double rltv = 0;
 		double ctrt=0;
 		int hgpr = 0;
-		//long long m = 0;
-		if (in) {
-			//fscanf(in, "%d %lf %lld %lf", &prc, &ctrt, &m, &rltv);
-			fscanf(in, "%d %lf %d", &prc, &ctrt, &hgpr);
-			fclose(in);
-		}
-		else {
-			printf("x.txt read fail.\n");
-			return 0;
-		}
+		
+		if (in) { fscanf(in, "%d %lf %d", &prc, &ctrt, &hgpr); fclose(in);
+		} else { printf("x.txt read fail.\n");return 0; }
+
 		if (prc && ctrt && hgpr) {
-			//double hr = ((double)abs(prc - hgpr))/((double)prc) * 100.0f;
-			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 1.0f) ? true : false;
-			if (!acount.HaveStock() && ctrt >= X && close ) {//BUY
-					
-				Buy(prc);
-					
-			}
 			
-			double r = 0.0f;
-			if(acount.GetStockPrice())
-				r=((double)(prc - acount.GetStockPrice()) / (double)acount.GetStockPrice())*100.0f;
-			double YY = 1.5f;
-			if (P) {
-				if (acount.HaveStock() && prc >= Y) {
-					Sell(prc);
-					return 0;
-				}
+			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 1.0f) ? true : false;
+			if (!acount.HaveStock() && ctrt >= X && close ) Buy(prc);
+			
+			int r = 0;
+			if (acount.GetStockPrice()) r = prc - acount.GetStockPrice();
+
+			if (P) { if (acount.HaveStock() && prc >= Y) {Sell(prc);return 0;}
 			}
-			else {
-				
-				if (acount.HaveStock() && r>= YY) {//SELL
-					//Sell(prc);
+			else {	if (acount.HaveStock() && r>= GetUnit(prc)*Y) {//SELL
 					acount.Sell(prc, acount.GetStockCnt());
-					return 0;
-				}
+					return 0; }
 			}
 
-			if (acount.HaveStock() && r <= -YY)
-			{
-				Sell(prc);
-				return 0;
-			}
-			/*
-			if ((Utils::CurrentGetHour() >= ENDHOUR && Utils::CurrentGetMinute() > ENDMINUTE) || Utils::CurrentGetHour()>ENDHOUR)
-			{
-				if(acount.HaveStock())
-					Sell(prc);
-				return 0;
-			}*/
+			if (acount.HaveStock() && r <= -(GetUnit(prc)*Y)){ Sell(prc);return 0; }
 		}
-		
 		return 1;
 	}
 
@@ -211,14 +154,11 @@ public:
 			acount.Buy(p, cnt);
 			fclose(in);
 		}
-		
 	}
 
 	void Sell(int prc) {
-
 		int unit = GetUnit(prc);
 		const int level = 3;
-		
 		prc -= unit*level;
 		char cmd[255];
 		int cnt = acount.GetStockCnt();
@@ -226,16 +166,13 @@ public:
 		system(cmd);
 		prc += unit*level;
 		acount.Sell(prc, cnt);
-		
 	}
 
 	void directSell(int prc) {
-
 		char cmd[255];
 		int cnt = acount.GetStockCnt();
 		sprintf(cmd, "hstcp %s -s %s %d %d", servername, code, prc, cnt);
 		system(cmd);
-		//acount.Sell(prc, cnt);
 	}
 
 	int GetUnit(int &prc) {
@@ -257,20 +194,9 @@ public:
 		return unit;
 	}
 
-	int GetSellPrc(int& prc,int& unit)
-	{
-		int sell_prc = prc;
-		const double goal_prc =(double)prc * 1.02f;
-		do {
-			sell_prc += unit;
-		} while (sell_prc < goal_prc);
-		return sell_prc;
-	}
-
 	void Buy(int prc) {
 		int unit = GetUnit(prc);
 		const int level = 3;
-		
 		prc += unit*level;
 		char cmd[255];
 		int cnt = acount.GetMyMoney() / prc;
@@ -279,8 +205,7 @@ public:
 		prc -= unit*level;
 		acount.Buy(prc, cnt);
 		save(prc);
-
-		directSell(GetSellPrc(prc, unit));
+		directSell(prc+unit*Y);
 	}
 
 	CORE() {
@@ -288,23 +213,16 @@ public:
 		acount.SetMoney(10000000);
 		strcpy(servername, "localhost");
 	}
-
 	CORE(int x,int y,int z) {
 		this->CORE::CORE();
-		X = x;
-		Y = y;
-		Z = z;
+		X = x;Y = y;Z = z;
 		printf("X=%d\n", X);
 		printf("Y=%d\n", Y);
 		printf("Z=%d\n", Z);
 		if (Y > 10)SetP(true);
 		if (Z <= 10)Z = Z * 10000;
 	}
-
-	void SetMoney(int m) {
-		acount.SetMoney(m);
-	}
-
+	void SetMoney(int m) {acount.SetMoney(m);}
 	void SetSERVERNAME(char* s)
 	{
 		strcpy(servername, s);
@@ -319,21 +237,8 @@ public:
 		}
 		port[pi] = 0;
 	}
-
-	void SetX(int x,int y) {
-		X = x;
-		Y = y;
-	}
-	
-	void Debug(bool d) {
-		D = d;
-		acount.Debug(d);
-	}
-	void SetAcount(int m) {
-		acount.SetMoney(m);
-	}
-	
-	void Print() {
-			printf("MY MONEY : %d\n", acount.GetMyMoney());
-	}
+	void SetX(int x,int y) {X = x;Y = y;}
+	void Debug(bool d) {D = d;acount.Debug(d);}
+	void SetAcount(int m) {acount.SetMoney(m);}
+	void Print() {printf("MY MONEY : %d\n", acount.GetMyMoney());}
 };
