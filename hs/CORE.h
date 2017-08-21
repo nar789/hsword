@@ -11,7 +11,7 @@
 #define CODE 6
 #define PORT 4
 #define STARTHOUR 9
-#define STARTMINUTE 1
+#define STARTMINUTE 10
 #define CODEPOS 0
 
 using namespace std;
