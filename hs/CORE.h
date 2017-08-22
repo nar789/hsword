@@ -117,17 +117,17 @@ public:
 			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 1.0f) ? true : false;
 			if (!acount.HaveStock() && ctrt >= X && close ) Buy(prc);
 			
-			int r = 0;
-			if (acount.GetStockPrice()) r = prc - acount.GetStockPrice();
+			double r = 0.0f;
+			if (acount.HaveStock()) r = (double)(prc - acount.GetStockPrice())/(double)prc*100.0f;
 
 			if (P) { if (acount.HaveStock() && prc >= Y) {Sell(prc);return 0;}
 			}
-			else {	if (acount.HaveStock() && r>= GetUnit(prc)*Y) {//SELL
+			else {	if (acount.HaveStock() && r>= 2.0f) {//SELL
 					acount.Sell(prc, acount.GetStockCnt());
 					return 0; }
 			}
 
-			if (acount.HaveStock() && r <= -(GetUnit(prc)*Y)){ Sell(prc);return 0; }
+			if (acount.HaveStock() && r <= -2.0f){ Sell(prc);return 0; }
 		}
 		return 1;
 	}
@@ -193,6 +193,17 @@ public:
 			unit = 1;
 		return unit;
 	}
+	
+	int GetSellPrc(int& prc, int& unit)
+	{
+		int sell_prc = prc;
+		const double goal_prc = (double)prc * 1.015f;
+		do {
+			sell_prc += unit;
+		} while (sell_prc < goal_prc);
+		return sell_prc;
+	}
+
 
 	void Buy(int prc) {
 		int unit = GetUnit(prc);
@@ -205,7 +216,7 @@ public:
 		prc -= unit*level;
 		acount.Buy(prc, cnt);
 		save(prc);
-		directSell(prc+unit*Y);
+		directSell(GetSellPrc(prc,unit));
 	}
 
 	CORE() {
