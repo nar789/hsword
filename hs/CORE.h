@@ -114,7 +114,7 @@ public:
 
 		if (prc && ctrt && hgpr) {
 			
-			bool close = (((double)abs(hgpr - prc) / (double)GetUnit(prc)) <= 1.0f) ? true : false;
+			bool close = (((double)abs(hgpr - prc) / (double)hgpr) <= 1.0f) ? true : false;
 			if (!acount.HaveStock() && ctrt >= X && close ) Buy(prc);
 			
 			double r = 0.0f;
